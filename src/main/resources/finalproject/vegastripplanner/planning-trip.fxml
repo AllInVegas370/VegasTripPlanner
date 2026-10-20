@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+   <children>
+      <VBox prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Plan a Trip!">
+               <font>
+                  <Font name="Bodoni 72 Smallcaps Book" size="44.0" />
+               </font>
+            </Label>
+            <SplitPane dividerPositions="0.46237458193979936" prefHeight="160.0" prefWidth="200.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <ChoiceBox fx:id="partyNumber" layoutX="53.0" layoutY="26.0" prefWidth="150.0" />
+                        <Label layoutX="27.0" layoutY="3.0" text="How many are in your party?" textAlignment="CENTER">
+                           <font>
+                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="308.0">
+                     <children>
+                        <Label layoutX="75.0" layoutY="3.0" text="What is your budget?">
+                           <font>
+                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox layoutX="76.0" layoutY="26.0" prefWidth="150.0" />
+                     </children></AnchorPane>
+              </items>
+            </SplitPane>
+            <SplitPane dividerPositions="0.46237458193979936" prefHeight="160.0" prefWidth="200.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="36.0" prefWidth="273.0" text="Average age of those in your party?">
+                           <font>
+                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Label layoutX="62.0" layoutY="3.0" text="What would you like to do?">
+                           <font>
+                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children></VBox>
+   </children>
+</AnchorPane>

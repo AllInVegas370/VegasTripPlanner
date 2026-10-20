@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,10 +17,9 @@ public class PlanningTripApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("planning-trip.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 600);
         primaryStage.setTitle("Planning a Trip!");
-        Button hello = new Button();
         primaryStage.setScene(scene);
         primaryStage.show();
     }
