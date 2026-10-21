@@ -4,16 +4,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+<AnchorPane prefHeight="444.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
    <children>
-      <VBox prefHeight="400.0" prefWidth="600.0">
+      <VBox prefHeight="444.0" prefWidth="620.0">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" text="Plan a Trip!">
                <font>
                   <Font name="Bodoni 72 Smallcaps Book" size="44.0" />
                </font>
             </Label>
-            <SplitPane dividerPositions="0.46237458193979936" prefHeight="160.0" prefWidth="200.0">
+            <SplitPane dividerPositions="0.4749190938511327" prefHeight="160.0" prefWidth="200.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
@@ -35,9 +35,9 @@
                      </children></AnchorPane>
               </items>
             </SplitPane>
-            <SplitPane dividerPositions="0.46237458193979936" prefHeight="160.0" prefWidth="200.0">
+            <SplitPane dividerPositions="0.4749190938511327" prefHeight="160.0" prefWidth="200.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="185.0" prefWidth="290.0">
                      <children>
                         <Label alignment="CENTER" prefHeight="36.0" prefWidth="273.0" text="Average age of those in your party?">
                            <font>
@@ -47,7 +47,7 @@
                         <ChoiceBox fx:id="averageAge" layoutX="47.0" layoutY="36.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="157.0" prefWidth="322.0">
                      <children>
                         <Label layoutX="62.0" layoutY="3.0" text="What are your interests?">
                            <font>
