@@ -1,0 +1,9 @@
+Scrum 2 Notes:
+- Sprint 1 updates:
+    - Milah collected data and is now cleaning and normalizing it (starting to create database)
+    - Cody created basic UI layout for Just Exploring (button creation, button actions)
+        - Still figuring out how to incorporate database
+    - Kevin has a way to take user input and store it
+        - Kevin also has code ready for the main page but still needs to work on main page
+    - Ximena has the "Planning a Trip" page basically completed
+        - Still needs to do some fine tuning for the parameters and the values that the user can see in the dropdown

@@ -17,7 +17,7 @@ public class PlanningTripApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("planning-trip.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 375);
-        primaryStage.setTitle("Planning a Trip!");
+        primaryStage.setTitle("Start Planning Your Trip!");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

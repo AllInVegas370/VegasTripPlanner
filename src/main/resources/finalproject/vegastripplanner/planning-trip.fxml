@@ -6,9 +6,9 @@
 
 <AnchorPane prefHeight="444.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
    <children>
-      <VBox prefHeight="444.0" prefWidth="620.0">
+      <VBox layoutX="-8.0" prefHeight="492.0" prefWidth="628.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Plan a Trip!">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="58.0" prefWidth="214.0" text="Plan a Trip!">
                <font>
                   <Font name="Bodoni 72 Smallcaps Book" size="44.0" />
                </font>
@@ -39,7 +39,7 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="185.0" prefWidth="290.0">
                      <children>
-                        <Label alignment="CENTER" prefHeight="36.0" prefWidth="273.0" text="Average age of those in your party?">
+                        <Label alignment="CENTER" layoutX="14.0" layoutY="-4.0" prefHeight="36.0" prefWidth="273.0" text="How many adults are in your party?">
                            <font>
                               <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
                            </font>
@@ -57,6 +57,12 @@
                         <ChoiceBox fx:id="interests" layoutX="84.0" layoutY="26.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
+              </items>
+            </SplitPane>
+            <SplitPane dividerPositions="0.4752396166134185" prefHeight="160.0" prefWidth="200.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
               </items>
             </SplitPane>
          </children></VBox>
