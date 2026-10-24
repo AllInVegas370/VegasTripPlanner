@@ -44,7 +44,7 @@
                               <Font name="System Font" size="13.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="averageAge" layoutX="47.0" layoutY="36.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="adultAmount" layoutX="47.0" layoutY="36.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="157.0" prefWidth="322.0">
@@ -59,16 +59,12 @@
                   </AnchorPane>
               </items>
             </SplitPane>
-            <SplitPane dividerPositions="0.4752396166134185" prefHeight="160.0" prefWidth="200.0">
-              <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                     <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="40.0" layoutY="6.0" prefHeight="17.0" prefWidth="214.0" text="How many kids are in your party?" />
-                        <ChoiceBox layoutX="61.0" layoutY="23.0" prefWidth="150.0" />
-                     </children></AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-              </items>
-            </SplitPane>
+            <Pane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="173.0" layoutY="14.0" prefHeight="17.0" prefWidth="214.0" text="How many kids are in your party?" />
+                  <ChoiceBox fx:id="kidAmount" layoutX="205.0" layoutY="31.0" prefWidth="150.0" />
+               </children>
+            </Pane>
          </children></VBox>
    </children>
 </AnchorPane>
