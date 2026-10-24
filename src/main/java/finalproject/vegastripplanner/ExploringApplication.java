@@ -13,13 +13,9 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 
-public class ExploringApplication extends Application {
+public class ExploringApplication{
     Pane base;
-    public static void main(String[] args) {
-        launch(args);
-    }
 
-    @Override
     public void start(Stage primaryStage) {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         base = new Pane();

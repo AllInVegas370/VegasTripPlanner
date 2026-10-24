@@ -38,6 +38,16 @@ public class HelloApplication extends Application {
         Browse.setPrefWidth(100);
         Browse.setPrefHeight(100);
 
+        Browse.setOnAction(actionEvent -> {
+            try{
+                ExploringApplication explore = new ExploringApplication();
+                explore.start(stage);
+            } catch(Exception e){
+                System.err.println("Could not open the exploring view.");
+                e.printStackTrace();
+            }
+        });
+
 
         //Setting Plan Button
 
