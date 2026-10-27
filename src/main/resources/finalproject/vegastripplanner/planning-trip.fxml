@@ -18,17 +18,17 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
                         <ChoiceBox fx:id="partyNumber" layoutX="53.0" layoutY="26.0" prefWidth="150.0" />
-                        <Label layoutX="27.0" layoutY="3.0" text="How many are in your party?" textAlignment="CENTER">
+                        <Label layoutX="51.0" layoutY="6.0" text="How many are in your party?" textAlignment="CENTER">
                            <font>
-                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                              <Font name="System Font" size="13.0" />
                            </font>
                         </Label>
                      </children></AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="308.0">
                      <children>
-                        <Label layoutX="75.0" layoutY="3.0" text="What is your budget?">
+                        <Label layoutX="105.0" layoutY="6.0" text="What is your budget?">
                            <font>
-                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                              <Font name="System Font" size="13.0" />
                            </font>
                         </Label>
                         <ChoiceBox fx:id="budgetAmount" layoutX="76.0" layoutY="26.0" prefWidth="150.0" />
@@ -41,17 +41,17 @@
                      <children>
                         <Label alignment="CENTER" layoutX="14.0" layoutY="-4.0" prefHeight="36.0" prefWidth="273.0" text="How many adults are in your party?">
                            <font>
-                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                              <Font name="System Font" size="13.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="averageAge" layoutX="47.0" layoutY="36.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="adultAmount" layoutX="47.0" layoutY="36.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="157.0" prefWidth="322.0">
                      <children>
-                        <Label layoutX="62.0" layoutY="3.0" text="What are your interests?">
+                        <Label layoutX="97.0" layoutY="6.0" text="What are your interests?">
                            <font>
-                              <Font name="Bodoni 72 Oldstyle Book" size="19.0" />
+                              <Font name="System Font" size="13.0" />
                            </font>
                         </Label>
                         <ChoiceBox fx:id="interests" layoutX="84.0" layoutY="26.0" prefWidth="150.0" />
@@ -59,10 +59,20 @@
                   </AnchorPane>
               </items>
             </SplitPane>
-            <SplitPane dividerPositions="0.4752396166134185" prefHeight="160.0" prefWidth="200.0">
+            <SplitPane dividerPositions="0.4744408945686901" prefHeight="160.0" prefWidth="200.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <ChoiceBox fx:id="kidAmount" layoutX="63.0" layoutY="31.0" prefWidth="150.0" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="31.0" layoutY="14.0" prefHeight="17.0" prefWidth="214.0" text="How many kids are in your party?" />
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="openExploring" layoutX="58.0" layoutY="8.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="191.0" text="Just Exploring?" />
+                        <Label layoutX="125.0" layoutY="78.0" text="Click here!" />
+                     </children>
+                  </AnchorPane>
               </items>
             </SplitPane>
          </children></VBox>

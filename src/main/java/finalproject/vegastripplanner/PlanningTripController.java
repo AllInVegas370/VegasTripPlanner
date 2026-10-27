@@ -6,13 +6,14 @@ import javafx.scene.control.ChoiceBox;
 public class PlanningTripController {
 
     @FXML
-    private ChoiceBox<String> partyNumber, budgetAmount, averageAge, interests;
+    private ChoiceBox<String> partyNumber, budgetAmount, adultAmount, interests, kidAmount;
 
     @FXML
     public void initialize(){
         partyNumber.getItems().addAll("1", "2", "3", "4", "5 or more");
-        budgetAmount.getItems().addAll("$100-$200", "$200-$300");
-        averageAge.getItems().addAll("1-5 years", "5-10 years", "10-18 years", "18-20 years", "21+ years");
-        interests.getItems().addAll("Bars", "Casinos");
+        budgetAmount.getItems().addAll("$1000-$2000", "$2000-$3000", "$3000-$4000", "$4000-$5000");
+        adultAmount.getItems().addAll("2", "4", "5", "6+", "10+");
+        kidAmount.getItems().addAll("2", "4", "6+");
+        interests.getItems().addAll("Bars", "Casinos", "Restaurants", "Attractions");
     }
 }

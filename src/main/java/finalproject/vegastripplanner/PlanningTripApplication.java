@@ -3,22 +3,30 @@ package finalproject.vegastripplanner;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class PlanningTripApplication extends Application {
+public class PlanningTripApplication {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+   private final Stage primaryStage = new Stage();
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("planning-trip.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 375);
+    public void showWindow(Stage mainStage) throws IOException {
+        // Using getClass() ensures it looks in the correct resource folder relative to this class
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("planning-trip.fxml"));
+
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         primaryStage.setTitle("Start Planning Your Trip!");
         primaryStage.setScene(scene);
+
+        // Optional: Blocks the HelloApplication window until this popup is closed
+        primaryStage.initModality(Modality.APPLICATION_MODAL);
+
+        mainStage.close();
+
         primaryStage.show();
     }
+
 }
+
