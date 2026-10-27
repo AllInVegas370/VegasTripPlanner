@@ -3,24 +3,21 @@ package finalproject.vegastripplanner;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class MainApplication extends Application {
     String SavedUserName = "";
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("main-page.fxml"));
 
         Pane base = new Pane();
-        base.setStyle("-fx-background-color: white;");
+        /*base.setStyle("-fx-background-color: white;");
 
         TextField textbox = new TextField();
         textbox.setPromptText("Enter Name");
@@ -47,7 +44,6 @@ public class HelloApplication extends Application {
                 e.printStackTrace();
             }
         });
-
 
         //Setting Plan Button
 
@@ -90,7 +86,7 @@ public class HelloApplication extends Application {
         base.getChildren().add(text);
         base.getChildren().add(textbox);
         base.getChildren().add(Browse);
-        base.getChildren().add(Plan);
+        base.getChildren().add(Plan);*/
 
         Scene scene = new Scene(base, 800, 500);
 

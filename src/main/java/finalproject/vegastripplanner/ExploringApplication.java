@@ -1,6 +1,5 @@
 package finalproject.vegastripplanner;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -11,13 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.IOException;
-
 public class ExploringApplication{
     Pane base;
 
     public void start(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("exploring.fxml"));
         base = new Pane();
         Scene scene = new Scene(base, 1000, 600);
         boolean justExploring = true;

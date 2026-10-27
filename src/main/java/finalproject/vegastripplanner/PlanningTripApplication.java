@@ -16,7 +16,7 @@ public class PlanningTripApplication {
         // Using getClass() ensures it looks in the correct resource folder relative to this class
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("planning-trip.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 600, 500);
         primaryStage.setTitle("Start Planning Your Trip!");
         primaryStage.setScene(scene);
 
