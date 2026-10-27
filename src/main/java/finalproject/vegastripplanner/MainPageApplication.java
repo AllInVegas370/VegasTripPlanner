@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.Parent;
 
 import java.io.IOException;
 
@@ -16,12 +17,14 @@ public class MainPageApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-page.fxml"));
+        Parent root;
+        root = FXMLLoader.load(getClass().getResource("main-page.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(), 600, 500);
-        primaryStage.setTitle("Start Planning Your Trip!");
+        Scene scene = new Scene(root);
+        primaryStage.setTitle("Welcome!");
         primaryStage.setScene(scene);
 
+        primaryStage.setMaximized(true);
 
         primaryStage.show();
     }

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" />
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="552.0" prefWidth="695.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.MainController">
+   <top>
+      <AnchorPane prefHeight="78.0" prefWidth="663.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="quitButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onQuitButtonClicked" text="Quit" />
+         </children>
+      </AnchorPane>
+   </top>
+   <bottom>
+      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="planTrpButton" alignment="CENTER" mnemonicParsing="false" onAction="#onPlanTripButtonClicked" text="PLan a Trip?" />
+            <Button fx:id="exploreButton" alignment="CENTER" mnemonicParsing="false" onAction="#onExploreButtonClicked" text="Exploring" />
+         </children>
+      </StackPane>
+   </bottom>
+</BorderPane>
