@@ -14,7 +14,7 @@ public class ExploringApplication{
     Pane base;
 
     public void start(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("exploring.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainPageApplication.class.getResource("exploring.fxml"));
         base = new Pane();
         Scene scene = new Scene(base, 1000, 600);
         boolean justExploring = true;

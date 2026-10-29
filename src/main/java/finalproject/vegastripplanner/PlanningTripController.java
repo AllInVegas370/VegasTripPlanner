@@ -1,19 +1,37 @@
 package finalproject.vegastripplanner;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class PlanningTripController {
 
     @FXML
-    private ChoiceBox<String> partyNumber, budgetAmount, adultAmount, interests, kidAmount;
+    private Button quitButton, returnButton;
 
     @FXML
-    public void initialize(){
-        partyNumber.getItems().addAll("1", "2", "3", "4", "5 or more");
-        budgetAmount.getItems().addAll("$1000-$2000", "$2000-$3000", "$3000-$4000", "$4000-$5000");
-        adultAmount.getItems().addAll("2", "4", "5", "6+", "10+");
-        kidAmount.getItems().addAll("2", "4", "6+");
-        interests.getItems().addAll("Bars", "Casinos", "Restaurants", "Attractions");
+    protected void onQuitButtonClicked(){
+        Platform.exit();
+    }
+
+    @FXML
+    protected void onReturnButtonClicked(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        Parent mainPage = loader.load(MainPageApplication.class.getResource("main-page.fxml"));
+        Scene mainScene = new Scene(mainPage);
+
+        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+        window.setScene(mainScene);
+
+        window.show();
     }
 }

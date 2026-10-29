@@ -17,7 +17,6 @@ public class PlanningTripApplication {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("planning-trip.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 600, 500);
-        primaryStage.setTitle("Start Planning Your Trip!");
         primaryStage.setScene(scene);
 
         // Optional: Blocks the HelloApplication window until this popup is closed
@@ -27,6 +26,5 @@ public class PlanningTripApplication {
 
         primaryStage.show();
     }
-
 }
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class MainController {
     @FXML
-    private Button quitButton, planTrpButton, exploreButton;
+    private Button quitButton, planTrpButton, exploreButton, createAccountButton;
 
     // This buttons quits the entire program
     @FXML
@@ -57,6 +57,27 @@ public class MainController {
         Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
 
         window.setScene(exploreScene);
+
+        // setMaximized sets the window to appear in full screen mode and adjusts based on users screen size
+        window.setMaximized(true);
+
+        window.show();
+    }
+
+    // This buttons connects to AccountApplication so that a user can make a new account
+    @FXML
+    protected void onCreateAccountButtonClicked(ActionEvent event) throws IOException{
+        // Loading FXML and setting the loader to the application
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(ExploringApplication.class.getResource("account.fxml"));
+        Parent accountViewer = loader.load();
+
+        // Creating the new scene so that the scene shows up
+        Scene accountScene = new Scene(accountViewer);
+
+        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+        window.setScene(accountScene);
 
         // setMaximized sets the window to appear in full screen mode and adjusts based on users screen size
         window.setMaximized(true);
