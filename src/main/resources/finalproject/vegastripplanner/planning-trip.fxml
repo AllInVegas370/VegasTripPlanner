@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+<BorderPane prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
    <top>
       <HBox prefHeight="104.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -57,6 +57,26 @@
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin></ChoiceBox>
+            <Label text="How many adults are in your paty?">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <ChoiceBox prefWidth="150.0">
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </ChoiceBox>
+            <Label text="What are your interests?">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <ChoiceBox prefWidth="150.0">
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </ChoiceBox>
          </children>
       </VBox>
    </left>
@@ -66,10 +86,22 @@
    <center>
       <VBox prefHeight="378.0" prefWidth="144.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Please enter your start date:" />
-            <DatePicker />
-            <Label text="Please enter your end date:" />
-            <DatePicker />
+            <Label text="Please enter your start date:">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" />
+               </VBox.margin></Label>
+            <DatePicker>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" />
+               </VBox.margin></DatePicker>
+            <Label text="Please enter your end date:">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" />
+               </VBox.margin></Label>
+            <DatePicker>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin></DatePicker>
          </children>
       </VBox>
    </center>

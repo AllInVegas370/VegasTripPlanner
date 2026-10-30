@@ -19,8 +19,8 @@ public class MainPageApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root;
         root = FXMLLoader.load(getClass().getResource("main-page.fxml"));
-
         Scene scene = new Scene(root);
+
         primaryStage.setTitle("All In Vegas: For All Your Vegas Needs");
         primaryStage.setScene(scene);
 
