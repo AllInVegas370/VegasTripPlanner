@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="644.0" style="-fx-background-color: #FFFBF7;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="644.0" style="-fx-background-color: #FFFBF7;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -33,7 +33,7 @@
                   <Insets bottom="5.0" />
                </VBox.margin>
             </Label>
-            <TextField alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="199.0" promptText="username" stylesheets="@style.css">
+            <TextField fx:id="usernameField" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="199.0" promptText="username" stylesheets="@style.css">
                <VBox.margin>
                   <Insets bottom="20.0" left="5.0" />
                </VBox.margin>
@@ -46,7 +46,7 @@
                   <Insets bottom="5.0" />
                </VBox.margin>
             </Label>
-            <PasswordField alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="199.0" promptText="password" />
+            <PasswordField fx:id="passwordField" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="199.0" promptText="password" />
             <Region prefHeight="200.0" prefWidth="200.0" />
          </children>
       </VBox>

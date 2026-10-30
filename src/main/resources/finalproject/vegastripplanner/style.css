@@ -5,8 +5,10 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center center;
     -fx-background-size: cover;
+}
 
-    -fx-text-fill: gold;
+.label{
+    -fx-text-fill: white;
 }
 
 /* Style for buttons */
@@ -14,5 +16,6 @@
     -fx-background-color: #4A60CF;
     -fx-background-radius: 20px;
     -fx-text-fill: white;
+    -fx-font-size: 18px;
 }
 

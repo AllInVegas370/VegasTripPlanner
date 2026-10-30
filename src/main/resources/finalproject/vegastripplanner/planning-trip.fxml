@@ -45,7 +45,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" />
                </VBox.margin></Label>
-            <ChoiceBox prefWidth="150.0">
+            <ChoiceBox fx:id="budget" prefWidth="150.0">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin></ChoiceBox>
@@ -53,7 +53,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" top="10.0" />
                </VBox.margin></Label>
-            <ChoiceBox prefWidth="150.0">
+            <ChoiceBox fx:id="children" prefWidth="150.0">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin></ChoiceBox>
@@ -62,7 +62,7 @@
                   <Insets bottom="5.0" left="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ChoiceBox prefWidth="150.0">
+            <ChoiceBox fx:id="adults" prefWidth="150.0">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin>
@@ -72,7 +72,7 @@
                   <Insets bottom="5.0" left="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ChoiceBox prefWidth="150.0">
+            <ChoiceBox fx:id="interests" prefWidth="150.0">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin>
@@ -90,7 +90,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" />
                </VBox.margin></Label>
-            <DatePicker>
+            <DatePicker promptText="MM/DD/YYYY">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" />
                </VBox.margin></DatePicker>
@@ -98,7 +98,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" />
                </VBox.margin></Label>
-            <DatePicker>
+            <DatePicker promptText="MM/DD/YYYY">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin></DatePicker>
