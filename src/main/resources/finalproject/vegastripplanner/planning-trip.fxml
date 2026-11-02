@@ -39,7 +39,7 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="396.0" prefWidth="216.0" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefHeight="396.0" prefWidth="216.0" BorderPane.alignment="CENTER">
          <children>
             <Label text="What is your budget?">
                <VBox.margin>
@@ -84,7 +84,7 @@
       <VBox prefHeight="396.0" prefWidth="194.0" BorderPane.alignment="CENTER" />
    </right>
    <center>
-      <VBox prefHeight="378.0" prefWidth="144.0" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefHeight="378.0" prefWidth="144.0" BorderPane.alignment="CENTER">
          <children>
             <Label text="Please enter your start date:">
                <VBox.margin>
