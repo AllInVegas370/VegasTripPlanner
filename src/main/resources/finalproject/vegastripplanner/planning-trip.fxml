@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+<BorderPane prefHeight="525.0" prefWidth="733.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
    <top>
       <HBox prefHeight="104.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -81,7 +81,18 @@
       </VBox>
    </left>
    <right>
-      <VBox prefHeight="396.0" prefWidth="194.0" BorderPane.alignment="CENTER" />
+      <VBox prefHeight="416.0" prefWidth="231.0" BorderPane.alignment="CENTER">
+         <children>
+            <TableView prefHeight="200.0" prefWidth="200.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="C1" />
+                <TableColumn prefWidth="75.0" text="C2" />
+              </columns>
+               <VBox.margin>
+                  <Insets right="10.0" />
+               </VBox.margin>
+            </TableView>
+         </children></VBox>
    </right>
    <center>
       <VBox alignment="TOP_CENTER" prefHeight="378.0" prefWidth="144.0" BorderPane.alignment="CENTER">
