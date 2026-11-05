@@ -8,12 +8,12 @@
 }
 
 .label{
-    -fx-text-fill: #04D9FF;
+    -fx-text-fill: #038FC4;
 }
 
 /* Style for buttons */
 .button{
-    -fx-background-color: #4A60CF;
+    -fx-background-color: #26337b;
     -fx-background-radius: 20px;
     -fx-text-fill: white;
     -fx-font-size: 18px;
