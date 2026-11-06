@@ -2,8 +2,10 @@ package finalproject.vegastripplanner;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 
@@ -17,15 +19,24 @@ public class MainPageApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root;
-        root = FXMLLoader.load(getClass().getResource("main-page.fxml"));
-        Scene scene = new Scene(root);
+        try {
+            // 1. Load your Scene Builder FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
+            Parent root = loader.load();
 
-        primaryStage.setTitle("All In Vegas: For All Your Vegas Needs");
-        primaryStage.setScene(scene);
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        primaryStage.setMaximized(true);
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            primaryStage.setScene(scene);
 
-        primaryStage.show();
+            primaryStage.setFullScreenExitHint(""); // Removes the annoying popup text
+            primaryStage.setFullScreen(true);
+
+            // It will now render instantly in full-screen
+            primaryStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
