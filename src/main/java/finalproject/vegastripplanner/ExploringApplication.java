@@ -27,10 +27,10 @@ public class ExploringApplication{
     }
 
     public void layout() {
-        //On action, it should show access for
-        //Could make a for loop to create the buttons instead of manually creating them
-        //Resize buttons and arrange location of buttons
-        String[] places = {"Hotels", "Restaurants", "Entertainment", "Attractions", "Shops"};
+        // Button labels, and the matching category name stored in the database.
+        // The two arrays line up: "Hotels" -> "hotel", "Restaurants" -> "restaurant", etc.
+        String[] places = {"Hotels", "Restaurants", "Entertainment", "Bars", "Shops"};
+        String[] categories = {"hotel", "restaurant", "entertainment", "bar", "shopping"};
 
         Image background = new Image("file:src/main/Images/VegasBackDrop.jpg");
         ImageView imageView = new ImageView(background);
@@ -45,15 +45,16 @@ public class ExploringApplication{
             button.setLayoutX(100 + i * 160);
             button.setLayoutY(20);
             button.setPrefSize(150, 30);
+
+            // Copy this button's category into its own variable so the click code can use it
+            String category = categories[i];
+
             button.setOnAction(event -> {
                 Stage place = new Stage(); //New Window
-                String placeName = button.getText();
-                place.setTitle(placeName);
+                place.setTitle(button.getText());
 
-                Pane newPane = new Pane();
-
-                Scene newScene = new Scene(newPane, 500, 300);
-                place.setTitle(placeName);
+                // The list of places for this category, with the side panel on click
+                Scene newScene = new Scene(new PlacesBrowser(category), 800, 500);
                 place.setScene(newScene);
                 place.show();
             });
