@@ -57,7 +57,17 @@
         // This buttons connects to ExploringApplication
         @FXML
         protected void onExploreButtonClicked(ActionEvent event) {
-            new ExploringApplication().start(new Stage());
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // Build the Exploring page at full-screen size and show it in this same window
+            Scene scene = new ExploringApplication()
+                    .createScene(screenBounds.getWidth(), screenBounds.getHeight());
+            window.setScene(scene);
+
+            window.setFullScreenExitHint("");
+            window.setFullScreen(true);
+            window.show();
         }
 
         // This buttons connects to AccountApplication so that a user can make a new account
