@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+<BorderPane prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
    <top>
       <HBox prefHeight="104.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -90,7 +96,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" />
                </VBox.margin></Label>
-            <DatePicker promptText="MM/DD/YYYY">
+            <DatePicker fx:id="startDate" promptText="MM/DD/YYYY">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" />
                </VBox.margin></DatePicker>
@@ -98,10 +104,11 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" />
                </VBox.margin></Label>
-            <DatePicker promptText="MM/DD/YYYY">
+            <DatePicker fx:id="endDate" promptText="MM/DD/YYYY">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin></DatePicker>
+            <Button fx:id="submitButton" mnemonicParsing="false" onAction="#onSubmitButtonClicked" text="Button" />
          </children>
       </VBox>
    </center>
