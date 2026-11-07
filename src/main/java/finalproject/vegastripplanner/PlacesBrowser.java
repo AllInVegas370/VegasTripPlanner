@@ -67,6 +67,7 @@ public class PlacesBrowser extends BorderPane {
         detailPanel.getChildren().addAll(close, photo, title, category, price, location, description);
         detailPanel.setPadding(new Insets(12));
         detailPanel.setPrefWidth(320);
+        detailPanel.setStyle("-fx-background-color: white;");   // keeps the text readable over the page background
 
         // ---- show/hide the panel whenever the selected row changes ----
         listView.getSelectionModel().selectedItemProperty().addListener((obs, oldPlace, p) -> {
