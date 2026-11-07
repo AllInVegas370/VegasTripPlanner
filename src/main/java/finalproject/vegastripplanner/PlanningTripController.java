@@ -7,11 +7,13 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.stage.Screen;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -44,18 +46,32 @@ public class PlanningTripController {
 
     @FXML
     protected void onReturnButtonClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        Parent mainPage = loader.load(MainPageApplication.class.getResource("main-page.fxml"));
-        Scene mainScene = new Scene(mainPage);
+        try {
+            // 1. Load your Scene Builder FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
+            Parent root = loader.load();
 
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            // 2. Fetch the team member's monitor screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        window.setScene(mainScene);
-        window.setMaximized(true);
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        window.show();
+            // 3. Instantiate the scene using their exact screen dimensions right away
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            window.setScene(scene);
+
+            // 4. PRE-CONFIGURE full-screen states BEFORE showing the window
+            window.setFullScreenExitHint(""); // Removes the annoying popup text
+            window.setFullScreen(true);       // Arms the full-screen flag early
+
+            // 5. Finally, reveal the window
+            // It will now render instantly in full-screen without the "shrink and snap"
+            window.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 
     @FXML
     public void initialize(){

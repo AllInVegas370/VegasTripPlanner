@@ -4,10 +4,12 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,63 +27,90 @@ public class MainController {
     // This buttons connects to PlanningTripApplication
     @FXML
     protected void onPlanTripButtonClicked(ActionEvent event) throws IOException {
-        // Loading FXML and setting the loader to the application
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(PlanningTripApplication.class.getResource("planning-trip.fxml"));
-        Parent planningViewer = loader.load();
+        try {
+            // 1. Load your Scene Builder FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("planning-trip.fxml"));
+            Parent root = loader.load();
 
-        // Creating the new scene so that the scene shows up
-        Scene planScene = new Scene(planningViewer);
+            // 2. Fetch the team member's monitor screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        window.setScene(planScene);
+            // 3. Instantiate the scene using their exact screen dimensions right away
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            window.setScene(scene);
 
-        // setMaximized sets the window to appear in full screen mode and adjusts based on users screen size
-        window.setMaximized(true);
+            // 4. PRE-CONFIGURE full-screen states BEFORE showing the window
+            window.setFullScreenExitHint(""); // Removes the annoying popup text
+            window.setFullScreen(true);       // Arms the full-screen flag early
 
-        window.show();
+            // 5. Finally, reveal the window
+            // It will now render instantly in full-screen without the "shrink and snap"
+            window.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // This buttons connects to ExploringApplication
     @FXML
     protected void onExploreButtonClicked(ActionEvent event) throws IOException {
-        // Loading FXML and setting the loader to the application
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(ExploringApplication.class.getResource("exploring.fxml"));
-        Parent exploreViewer = loader.load();
+        try {
+            // 1. Load your Scene Builder FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("explore.fxml"));
+            Parent root = loader.load();
 
-        // Creating the new scene so that the scene shows up
-        Scene exploreScene = new Scene(exploreViewer);
+            // 2. Fetch the team member's monitor screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        window.setScene(exploreScene);
+            // 3. Instantiate the scene using their exact screen dimensions right away
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            window.setScene(scene);
 
-        // setMaximized sets the window to appear in full screen mode and adjusts based on users screen size
-        window.setMaximized(true);
+            // 4. PRE-CONFIGURE full-screen states BEFORE showing the window
+            window.setFullScreenExitHint(""); // Removes the annoying popup text
+            window.setFullScreen(true);       // Arms the full-screen flag early
 
-        window.show();
+            // 5. Finally, reveal the window
+            // It will now render instantly in full-screen without the "shrink and snap"
+            window.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // This buttons connects to AccountApplication so that a user can make a new account
     @FXML
     protected void onCreateAccountButtonClicked(ActionEvent event) throws IOException{
-        // Loading FXML and setting the loader to the application
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(ExploringApplication.class.getResource("account.fxml"));
-        Parent accountViewer = loader.load();
+        try {
+            // 1. Load your Scene Builder FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("account.fxml"));
+            Parent root = loader.load();
 
-        // Creating the new scene so that the scene shows up
-        Scene accountScene = new Scene(accountViewer);
+            // 2. Fetch the team member's monitor screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        window.setScene(accountScene);
+            // 3. Instantiate the scene using their exact screen dimensions right away
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+            window.setScene(scene);
 
-        // setMaximized sets the window to appear in full screen mode and adjusts based on users screen size
-        window.setMaximized(true);
+            // 4. PRE-CONFIGURE full-screen states BEFORE showing the window
+            window.setFullScreenExitHint(""); // Removes the annoying popup text
+            window.setFullScreen(true);       // Arms the full-screen flag early
 
-        window.show();
+            // 5. Finally, reveal the window
+            // It will now render instantly in full-screen without the "shrink and snap"
+            window.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
