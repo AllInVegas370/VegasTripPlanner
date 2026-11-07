@@ -15,6 +15,9 @@
     import java.io.IOException;
 
     public class MainController {
+
+
+
         @FXML
         private Button quitButton, planTrpButton, exploreButton, createAccountButton;
 
@@ -99,4 +102,6 @@
                 e.printStackTrace();
             }
         }
+
+
     }
