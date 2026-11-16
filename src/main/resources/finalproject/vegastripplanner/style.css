@@ -2,13 +2,16 @@
 .root{
     -fx-background-image: url("Images/vegas-landscape.jpg");
 
+
     -fx-background-repeat: no-repeat;
     -fx-background-position: center center;
     -fx-background-size: cover;
+
+    /*-fx-background-color: #6A1B5A;*/
 }
 
 .label{
-    -fx-text-fill: #038FC4;
+    -fx-text-fill: #8B0535;
 }
 
 /* Style for buttons */
