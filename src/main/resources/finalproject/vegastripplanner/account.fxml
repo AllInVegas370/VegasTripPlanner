@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #FFFBF7;" stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.AccountController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #FFFBF7;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.AccountController">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
