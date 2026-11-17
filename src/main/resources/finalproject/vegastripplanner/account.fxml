@@ -25,6 +25,18 @@
       <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
          <children>
             <Region prefHeight="17.0" prefWidth="644.0" />
+            <Label text="Please enter your first name:">
+               <font>
+                  <Font name="Impact" size="20.0" />
+               </font>
+            </Label>
+            <TextField alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="203.0" promptText="first name" />
+            <Label text="Please enter your birthday:">
+               <font>
+                  <Font name="Impact" size="20.0" />
+               </font>
+            </Label>
+            <DatePicker />
             <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Please enter a username:">
                <font>
                   <Font name="Impact" size="20.0" />
@@ -52,12 +64,6 @@
       </VBox>
    </center>
    <bottom>
-      <HBox prefHeight="201.0" prefWidth="644.0" BorderPane.alignment="CENTER">
-         <children>
-            <Region prefHeight="201.0" prefWidth="182.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#onSignUpButtonClicked" prefHeight="60.0" prefWidth="139.0" text="Sign Up" />
-            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-         </children>
-      </HBox>
+      <HBox prefHeight="201.0" prefWidth="644.0" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>
