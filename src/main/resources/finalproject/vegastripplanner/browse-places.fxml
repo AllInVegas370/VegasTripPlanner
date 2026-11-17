@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="finalproject.vegastripplanner.BrowsePlacesController"
+            stylesheets="@style.css">
+    <top>
+        <HBox fx:id="sortBar" spacing="8" alignment="CENTER_LEFT">
+            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+            <Label text="Sort by:"/>
+        </HBox>
+    </top>
+    <center>
+        <Pagination fx:id="pagination" maxPageIndicatorCount="7"/>
+    </center>
+</BorderPane>

@@ -26,3 +26,17 @@
     -fx-text-fill: #000000 !important;         /* Force black text color */
 }
 
+.place-name {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.place-row .label {
+    -fx-text-fill: white;
+}
+
+.place-row {
+    -fx-background-color: rgba(0, 0, 0, 0.55);
+    -fx-background-radius: 10;
+}

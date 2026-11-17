@@ -11,7 +11,6 @@
     import javafx.scene.control.Button;
     import javafx.stage.Screen;
     import javafx.stage.Stage;
-
     import java.io.IOException;
 
     public class MainController {
@@ -63,10 +62,15 @@
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
             Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // Build the Exploring page at full-screen size and show it in this same window
-            Scene scene = new ExploringApplication()
-                    .createScene(screenBounds.getWidth(), screenBounds.getHeight());
-            window.setScene(scene);
+            try {
+                // Load the new browsing page from its FXML file
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("browse-places.fxml"));
+                Scene scene = new Scene(loader.load(), screenBounds.getWidth(), screenBounds.getHeight());
+                window.setScene(scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;   // stay on the current page if the new one fails to load
+            }
 
             window.setFullScreenExitHint("");
             window.setFullScreen(true);
