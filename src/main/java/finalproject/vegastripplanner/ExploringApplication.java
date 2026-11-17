@@ -52,8 +52,8 @@ public class ExploringApplication {
     public void layout() {
         // Button labels, and the matching category name stored in the database.
         // The two arrays line up: "Hotels" -> "hotel", "Restaurants" -> "restaurant", etc.
-        String[] places = {"Hotels", "Restaurants", "Entertainment", "Bars", "Shops"};
-        String[] categories = {"hotel", "restaurant", "entertainment", "bar", "shopping"};
+        String[] places = {"Hotels", "Restaurants", "Entertainment", "Bars", "Shops","Casinos","Attractions"};
+        String[] categories = {"hotel", "restaurant", "entertainment", "bar", "shopping","casino","attraction"};
 
         // ---- top: title, then the row of category buttons, all centered ----
         HBox buttonRow = new HBox(20);
