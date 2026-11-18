@@ -126,3 +126,32 @@
 .divider-line { -fx-background-color: -border; }
 .divider-text { -fx-text-fill: -muted; -fx-font-size: 12px; }
 .footer-text { -fx-text-fill: -muted; -fx-font-size: 10px; }
+
+/* green "Sign in" link under the create-account button */
+.accent-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: -green;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.accent-link:hover { -fx-underline: true; }
+
+/* birthday picker */
+.login-root .date-picker {
+    -fx-background-color: -input-bg;
+    -fx-background-radius: 7;
+    -fx-border-color: -border;
+    -fx-border-radius: 7;
+    -fx-pref-height: 54px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.login-root .date-picker > .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.login-root .date-picker > .arrow-button {
+    -fx-background-color: transparent;
+}

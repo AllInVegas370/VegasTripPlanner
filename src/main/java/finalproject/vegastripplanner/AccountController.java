@@ -29,6 +29,16 @@ public class AccountController {
     private Button signUpButton;
 
     @FXML
+    private Button signInLinkButton;   // skip this line if you already have it
+
+    @FXML
+    protected void onSignInLinkClicked() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainPageApplication.class.getResource("main-page.fxml"));
+        Parent loginPage = loader.load();
+        signInLinkButton.getScene().setRoot(loginPage);
+    }
+
+    @FXML
     protected void onSignUpButtonClicked(ActionEvent event) throws IOException {
         System.out.println("Clicked!!");
 
@@ -50,7 +60,6 @@ public class AccountController {
             } catch (IOException e) {
                 System.err.println("Error while saving" + e.getMessage());
             }
-
         }
     }
 }
