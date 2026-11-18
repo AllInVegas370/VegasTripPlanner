@@ -1,0 +1,164 @@
+.trip-root {
+    -cream: #faf8f2;
+    -ink: #142921;
+    -muted: #636e66;
+    -green: #1f4738;
+    -border: #d1d6c9;
+    -input-bg: #fffffc;
+    -selected-bg: #e8f0e3;
+    -stepper-bg: #f2f2eb;
+
+    -fx-background-color: -cream;
+    -fx-font-family: "Segoe UI";
+}
+
+/* ---------- Header ---------- */
+.page-header {
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 22 0;
+}
+.brand-name-dark { -fx-text-fill: -green; -fx-font-size: 24px; -fx-font-weight: bold; }
+.brand-tagline-dark { -fx-text-fill: -muted; -fx-font-size: 9px; -fx-font-weight: bold; }
+
+.header-link {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -muted;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 0 4 0;
+    -fx-cursor: hand;
+}
+.header-link:hover { -fx-underline: true; }
+
+/* ---------- Intro ---------- */
+.trip-eyebrow { -fx-text-fill: -green; -fx-font-size: 10px; -fx-font-weight: bold; }
+.trip-title { -fx-text-fill: -ink; -fx-font-size: 46px; -fx-font-weight: bold; }
+.trip-description { -fx-text-fill: -muted; -fx-font-size: 14px; }
+
+.section-title { -fx-text-fill: -ink; -fx-font-size: 16px; -fx-font-weight: bold; }
+.section-hint { -fx-text-fill: -muted; -fx-font-size: 12px; }
+
+/* ---------- Interest cards ---------- */
+.interest-option {
+    -fx-background-color: -input-bg;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-color: -border;
+    -fx-border-radius: 7;
+    -fx-text-fill: -muted;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 64px;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.interest-option:hover { -fx-border-color: -green; }
+.interest-option:selected {
+    -fx-background-color: -selected-bg;
+    -fx-border-color: -green;
+    -fx-text-fill: -green;
+}
+
+/* ---------- Budget cards ---------- */
+.budget-option {
+    -fx-background-color: -input-bg;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-color: -border;
+    -fx-border-radius: 7;
+    -fx-pref-height: 76px;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.budget-option:hover { -fx-border-color: -green; }
+.budget-option:selected {
+    -fx-background-color: -selected-bg;
+    -fx-border-color: -green;
+}
+.budget-range { -fx-text-fill: -ink; -fx-font-size: 16px; -fx-font-weight: bold; }
+.budget-description { -fx-text-fill: -muted; -fx-font-size: 12px; }
+.budget-option:selected .budget-range { -fx-text-fill: -green; }
+.budget-note { -fx-text-fill: -muted; -fx-font-size: 11px; }
+
+/* ---------- Guest counters ---------- */
+.guest-counter {
+    -fx-background-color: -input-bg;
+    -fx-background-radius: 7;
+    -fx-border-color: -border;
+    -fx-border-radius: 7;
+    -fx-padding: 10 10 10 14;
+    -fx-min-height: 62px;
+}
+.guest-label { -fx-text-fill: -ink; -fx-font-size: 12px; -fx-font-weight: bold; }
+.guest-age { -fx-text-fill: -muted; -fx-font-size: 10px; }
+
+.stepper-button {
+    -fx-background-color: -stepper-bg;
+    -fx-background-insets: 0;
+    -fx-background-radius: 15;
+    -fx-text-fill: -green;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 0;
+    -fx-min-width: 26px;
+    -fx-pref-width: 26px;
+    -fx-pref-height: 30px;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.stepper-button:disabled { -fx-text-fill: -border; -fx-opacity: 1; -fx-cursor: default; }
+.stepper-value { -fx-text-fill: -green; -fx-font-size: 13px; -fx-font-weight: bold; }
+
+/* ---------- Dates ---------- */
+.date-label { -fx-text-fill: -ink; -fx-font-size: 11px; -fx-font-weight: bold; }
+
+.trip-root .date-picker {
+    -fx-background-color: -input-bg;
+    -fx-background-radius: 7;
+    -fx-border-color: -border;
+    -fx-border-radius: 7;
+    -fx-pref-height: 48px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.trip-root .date-picker > .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-text-fill: -ink;
+    -fx-prompt-text-fill: -muted;
+    -fx-padding: 0 8 0 16;
+}
+.trip-root .date-picker > .arrow-button { -fx-background-color: transparent; }
+.trip-root .date-picker:focused { -fx-border-color: -green; }
+
+/* ---------- Actions ---------- */
+.find-vegas-button {
+    -fx-background-color: -green;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-text-fill: -input-bg;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 54px;
+    -fx-cursor: hand;
+}
+.find-vegas-button:hover { -fx-background-color: #17392c; }
+
+.skip-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -green;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 44px;
+    -fx-cursor: hand;
+}
+.skip-button:hover { -fx-underline: true; }
+
+.page-footer { -fx-text-fill: -muted; -fx-font-size: 12px; }
