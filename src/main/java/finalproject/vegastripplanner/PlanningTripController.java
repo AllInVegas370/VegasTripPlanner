@@ -1,6 +1,9 @@
 package finalproject.vegastripplanner;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.application.Platform;
@@ -20,11 +23,14 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.awt.*;
+//import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlanningTripController {
 
@@ -108,19 +114,22 @@ public class PlanningTripController {
 
         System.out.println("Saved trip, switching screens");
 
-        FXMLLoader loader = new FXMLLoader();
-        Parent mainPage = loader.load(MainPageApplication.class.getResource("main-page.fxml"));
-        Scene mainScene = new Scene(mainPage);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
+        Parent root = loader.load();
 
-        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        window.setScene(mainScene);
-        window.setMaximized(true);
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+        Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+        window.setScene(scene);
+        window.setFullScreenExitHint(""); // Removes the annoying popup text
+        window.setFullScreen(true);       // Arms the full-screen flag early
         window.show();
+
     }
 
-    public class Trip
+    public static class Trip
     {
         private String budget;
         private String children;
@@ -128,6 +137,8 @@ public class PlanningTripController {
         private String interests;
         private LocalDate startDate;
         private LocalDate endDate;
+
+        public Trip(){}
 
         public Trip(String budget, String children,
                     String adults, String interests, LocalDate startDate, LocalDate endDate)
@@ -139,7 +150,12 @@ public class PlanningTripController {
             this.startDate = startDate;
             this.endDate = endDate;
         }
-
+        public void setBudget(String budget){this.budget = budget;}
+        public void setChildren(String children){this.children = children;}
+        public void setAdults(String adults){this.adults = adults;}
+        public void setInterests(String interests){this.interests = interests;}
+        public void setStartDate(LocalDate startDate){this.startDate = startDate;}
+        public void setEndDate(LocalDate endDate){this.endDate = endDate;}
         public String getBudget(){return budget;}
         public String getChildren(){return children;}
         public String getAdults(){return adults;}
@@ -149,15 +165,43 @@ public class PlanningTripController {
 
     }
 
-    public void objsToFile(Trip user)
+    public void objsToFile( Trip trip)
     {
-        String filePath = "userData/users.json";
-        File file = new File(filePath);
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());//Handles LocalDate[Start and End dates]
+        //if(username == null || username.isEmpty()) return;
 
-            mapper.writeValue(file, user);
+        String filePath = "userData/trip.json";
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(filePath);
+        mapper.registerModule(new JavaTimeModule());//Handles LocalDate[Start and End dates]
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        try {
+
+            file.getParentFile().mkdirs();
+            /* Save for later to link usernames to objects
+            Map<String, Trip> trips = new HashMap<>();
+            if(file.exists() && file.length() > 0) {
+                trips = mapper.readValue(file, new TypeReference<HashMap<String, Trip>>(){});
+            }
+
+            if(trips.containsKey(username)){
+                return;
+            }
+
+            trips.put(username, trip);
+            */
+
+            List<Trip> trips = new ArrayList<>();
+            if(file.exists() && file.length() > 0){
+                trips = mapper.readValue(file, new TypeReference<ArrayList<Trip>>(){});
+            }
+            if(trips.contains(trip)){
+                return;
+            }
+
+            trips.add(trip);
+
+            mapper.writeValue(file, trips);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
