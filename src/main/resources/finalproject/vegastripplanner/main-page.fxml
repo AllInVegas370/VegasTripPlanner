@@ -88,7 +88,7 @@
                         <VBox spacing="12.0">
                            <children>
                               <Label styleClass="form-eyebrow" text="YOUR VEGAS STARTS HERE" />
-                              <Label styleClass="form-title" text="Welcome back." />
+                              <Label fx:id="welcomeLabel" styleClass="form-title" text="Welcome back." />
                               <Label styleClass="form-description" text="Big nights. Great plans. Pick up where you left off." />
                            </children>
                         </VBox>
@@ -118,7 +118,7 @@
                            </children>
                         </HBox>
 
-                        <Button fx:id="signInButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="primary-button" text="Sign in" />
+                        <Button fx:id="signInButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSignInButtonClicked"  styleClass="primary-button" text="Sign in" />
 
                         <HBox alignment="CENTER" spacing="16.0">
                            <children>
