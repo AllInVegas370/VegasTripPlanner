@@ -81,31 +81,23 @@
         @FXML
         protected void onCreateAccountButtonClicked(ActionEvent event) throws IOException{
             try {
-                // 1. Load your Scene Builder FXML file
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("account.fxml"));
                 Parent root = loader.load();
-
-                // 2. Fetch the team member's monitor screen bounds
+                
                 Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
                 Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-                // 3. Instantiate the scene using their exact screen dimensions right away
                 Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
                 window.setScene(scene);
 
-                // 4. PRE-CONFIGURE full-screen states BEFORE showing the window
-                window.setFullScreenExitHint(""); // Removes the annoying popup text
-                window.setFullScreen(true);       // Arms the full-screen flag early
-
-                // 5. Finally, reveal the window
-                // It will now render instantly in full-screen without the "shrink and snap"
+                window.setFullScreenExitHint("");
+                window.setFullScreen(true);
                 window.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
 
     }
