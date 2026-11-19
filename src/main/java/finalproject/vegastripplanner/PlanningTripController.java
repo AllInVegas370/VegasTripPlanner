@@ -185,16 +185,9 @@ public class PlanningTripController {
         }
     }
 
-    // Opens the browsing (Exploring) page in the current window.
-    // If your Explore button on the login page opens it a different way,
-    // copy that code into this one method and both buttons here will use it.
+    // Opens the browse-places page in the current window, full screen.
     private void showBrowsingPage(ActionEvent event) {
-        try {
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            new ExploringApplication().start(window);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        showPage(event, "browse-places.fxml");
     }
 
     private void showMessage(String message) {

@@ -216,7 +216,7 @@
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
                         <Button fx:id="submitButton" mnemonicParsing="false" onAction="#onSubmitButtonClicked" prefWidth="320.0" styleClass="find-vegas-button" text="Find my Vegas" />
-                        <Button fx:id="skipButton" mnemonicParsing="false" styleClass="skip-button" text="Skip for now — browse places" />
+                        <Button fx:id="skipButton" mnemonicParsing="false" onAction="#onSkipButtonClicked" styleClass="skip-button" text="Skip for now — browse places" />
                      </children>
                   </VBox>
                </children>
