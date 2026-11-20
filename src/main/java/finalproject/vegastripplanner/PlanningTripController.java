@@ -1,9 +1,7 @@
 package finalproject.vegastripplanner;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.application.Platform;
@@ -14,36 +12,119 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.stage.Screen;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
-//import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class PlanningTripController {
 
+    // ----- header buttons -----
     @FXML
     private Button quitButton, returnButton;
 
+    // ----- interests: each one can be on or off, so several can be picked -----
     @FXML
-    private ChoiceBox<String> budget, children, adults, interests;
+    private ToggleButton diningToggle, entertainmentToggle, attractionsToggle,
+            casinosToggle, hotelsToggle, shoppingToggle;
+
+    // ----- budget: three cards, only one can be selected at a time -----
+    @FXML
+    private ToggleGroup budgetGroup;
+
+    // ----- party size: number labels with - and + buttons -----
+    @FXML
+    private Label adultsValue, childrenValue;
+
+    @FXML
+    private Button adultsMinusButton, adultsPlusButton,
+            childrenMinusButton, childrenPlusButton;
+
+    // ----- dates -----
+    @FXML
+    private DatePicker startDate, endDate;
 
     private Trip userTrip;
 
+    private int adultCount = 2;
+    private int childCount = 0;
+
+    private static final int MAX_GUESTS = 10;
+
+
     @FXML
-    private DatePicker startDate, endDate;
+    public void initialize() {
+        // Start with the middle budget card selected, like the design.
+        budgetGroup.selectToggle(budgetGroup.getToggles().get(1));
+
+        // Clicking the selected card again would normally turn it off.
+        // This puts it back on, so a budget is always chosen.
+        budgetGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
+            if (newToggle == null && oldToggle != null) {
+                budgetGroup.selectToggle(oldToggle);
+            }
+        });
+
+        updateCounts();
+    }
+
+
+    // ---------------------------------------------------------------
+    //  Party size buttons
+    // ---------------------------------------------------------------
+
+    @FXML
+    protected void onAdultsMinusClicked() {
+        adultCount--;
+        updateCounts();
+    }
+
+    @FXML
+    protected void onAdultsPlusClicked() {
+        adultCount++;
+        updateCounts();
+    }
+
+    @FXML
+    protected void onChildrenMinusClicked() {
+        childCount--;
+        updateCounts();
+    }
+
+    @FXML
+    protected void onChildrenPlusClicked() {
+        childCount++;
+        updateCounts();
+    }
+
+    // Shows the current numbers and greys out a button when it hits its limit.
+    private void updateCounts() {
+        adultsValue.setText(String.valueOf(adultCount));
+        childrenValue.setText(String.valueOf(childCount));
+
+        adultsMinusButton.setDisable(adultCount <= 1);          // at least 1 adult
+        adultsPlusButton.setDisable(adultCount >= MAX_GUESTS);
+        childrenMinusButton.setDisable(childCount <= 0);
+        childrenPlusButton.setDisable(childCount >= MAX_GUESTS);
+    }
+
+
+    // ---------------------------------------------------------------
+    //  Navigation
+    // ---------------------------------------------------------------
 
     @FXML
     protected void onQuitButtonClicked(){
@@ -51,82 +132,103 @@ public class PlanningTripController {
     }
 
     @FXML
-    protected void onReturnButtonClicked(ActionEvent event) throws IOException {
+    protected void onReturnButtonClicked(ActionEvent event) {
+        showPage(event, "main-page.fxml");
+    }
+
+    // "Skip for now - browse places": go to browsing without saving a trip.
+    @FXML
+    protected void onSkipButtonClicked(ActionEvent event) {
+        showBrowsingPage(event);
+    }
+
+    // "Find my Vegas": save the choices, then go to browsing.
+    @FXML
+    protected void onSubmitButtonClicked(ActionEvent event) {
+        LocalDate userStartDate = startDate.getValue();   // null if left empty
+        LocalDate userEndDate = endDate.getValue();
+
+        // Dates are optional ("It's okay if you're not sure yet"),
+        // but if both are filled in they have to make sense.
+        if (userStartDate != null && userEndDate != null && userEndDate.isBefore(userStartDate)) {
+            showMessage("Your departure date can't be before your arrival date.");
+            return;
+        }
+
+        userTrip = new Trip(
+                getBudgetText(),
+                String.valueOf(childCount),
+                String.valueOf(adultCount),
+                getSelectedInterests(),
+                userStartDate,
+                userEndDate);
+        objsToFile(userTrip);
+
+        System.out.println("Saved trip, switching screens");
+
+        showBrowsingPage(event);
+    }
+
+    // Loads an FXML page into the current window, full screen.
+    private void showPage(ActionEvent event, String fxmlName) {
         try {
-            // 1. Load your Scene Builder FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
             Parent root = loader.load();
 
-            // 2. Fetch the team member's monitor screen bounds
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-
             Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // 3. Instantiate the scene using their exact screen dimensions right away
-            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
-            window.setScene(scene);
-
-            // 4. PRE-CONFIGURE full-screen states BEFORE showing the window
-            window.setFullScreenExitHint(""); // Removes the annoying popup text
-            window.setFullScreen(true);       // Arms the full-screen flag early
-
-            // 5. Finally, reveal the window
-            // It will now render instantly in full-screen without the "shrink and snap"
+            window.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
+            window.setFullScreenExitHint("");
+            window.setFullScreen(true);
             window.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    public void initialize(){
-        budget.getItems().addAll("0","$1000 - $2000", "$2000 - $3000", "$3000 - $4000", "$4000 - $5000", "$5000 - $6000");
-        children.getItems().addAll("1", "2", "3", "4", "5", "6+");
-        adults.getItems().addAll("1", "2", "3", "4", "5", "6+");
-        interests.getItems().addAll("Hotels", "Restaurants", "Bars", "Casinos", "Shows");
+    // Opens the browse-places page in the current window, full screen.
+    private void showBrowsingPage(ActionEvent event) {
+        showPage(event, "browse-places.fxml");
     }
 
-    @FXML
-    protected void onSubmitButtonClicked(ActionEvent event) throws IOException
-    {
-        String userBudget = budget.getValue();
-        String userChildren = children.getValue();
-        String userAdults = adults.getValue();
-        String userInterests = interests.getValue();
-        LocalDate userStartDate = startDate.getValue();
-        LocalDate userEndDate = endDate.getValue();
+    private void showMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
 
-        if(userBudget == null || userChildren == null ||
-                userAdults == null || userInterests == null ||
-                userStartDate == null || userEndDate == null)
-        {
-            return;
+
+    // ---------------------------------------------------------------
+    //  Reading the choices
+    // ---------------------------------------------------------------
+
+    // Turns the selected budget card into readable text for the saved file.
+    private String getBudgetText() {
+        Toggle chosen = budgetGroup.getSelectedToggle();
+        if (chosen == null) {
+            return "";
         }
+        String code = (String) chosen.getUserData();
+        return switch (code) {
+            case "UNDER_150" -> "Under $150";
+            case "150_300" -> "$150-$300";
+            default -> "$300+";
+        };
+    }
 
-        if(userEndDate.isBefore(userStartDate))
-        {
-            return;
+    // Collects every interest that is switched on, e.g. "Dining, Shows".
+    // An empty string means no interests were picked.
+    private String getSelectedInterests() {
+        List<String> picked = new ArrayList<>();
+        List<ToggleButton> all = List.of(diningToggle, entertainmentToggle, attractionsToggle,
+                casinosToggle, hotelsToggle, shoppingToggle);
+        for (ToggleButton interest : all) {
+            if (interest.isSelected()) {
+                picked.add(interest.getText());
+            }
         }
-
-        userTrip = new Trip(userBudget, userChildren, userAdults, userInterests, userStartDate, userEndDate);
-        objsToFile(userTrip);
-
-        System.out.println("Saved trip, switching screens");
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
-        Parent root = loader.load();
-
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
-        window.setScene(scene);
-        window.setFullScreenExitHint(""); // Removes the annoying popup text
-        window.setFullScreen(true);       // Arms the full-screen flag early
-        window.show();
-
+        return String.join(", ", picked);
     }
 
     public static class Trip
@@ -150,12 +252,7 @@ public class PlanningTripController {
             this.startDate = startDate;
             this.endDate = endDate;
         }
-        public void setBudget(String budget){this.budget = budget;}
-        public void setChildren(String children){this.children = children;}
-        public void setAdults(String adults){this.adults = adults;}
-        public void setInterests(String interests){this.interests = interests;}
-        public void setStartDate(LocalDate startDate){this.startDate = startDate;}
-        public void setEndDate(LocalDate endDate){this.endDate = endDate;}
+
         public String getBudget(){return budget;}
         public String getChildren(){return children;}
         public String getAdults(){return adults;}
@@ -167,7 +264,6 @@ public class PlanningTripController {
 
     public void objsToFile( Trip trip)
     {
-        //if(username == null || username.isEmpty()) return;
 
         String filePath = "userData/trip.json";
         ObjectMapper mapper = new ObjectMapper();
@@ -188,8 +284,8 @@ public class PlanningTripController {
                 return;
             }
 
-            trips.put(username, trip);
-            */
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());//Handles LocalDate[Start and End dates]
 
             List<Trip> trips = new ArrayList<>();
             if(file.exists() && file.length() > 0){
@@ -207,50 +303,4 @@ public class PlanningTripController {
             throw new RuntimeException(e);
         }
     }
-
-    /*
-    public int checkChild() {
-        if (children.equals("6+")) {
-
-            Stage childCount = new Stage(); //New Window
-            childCount.setTitle("Confirming more than 6 children");
-
-            Pane newPane = new Pane();
-
-            Label quest = new Label("How many children are coming?");
-            quest.setLayoutX(100);
-            quest.setLayoutY(50);
-
-            TextField amount = new TextField();
-            amount.setPromptText("Enter number of children");
-            amount.setLayoutX(100);
-            amount.setLayoutY(100);
-
-            Button confirm = new Button("Submit");
-            confirm.setLayoutX(200);
-            confirm.setLayoutY(150);
-
-            confirm.setOnAction(event -> {
-                String input = amount.getText();
-
-                if(input.matches("6+"))
-                {
-                    int numChild = Integer.parseInt(input);
-
-                    if(numChild >= 7)
-                    {
-                        userTrip.
-                    }
-                }
-                this.children = children;
-            });
-
-            newPane.getChildren().addAll(quest, amount, confirm);
-            Scene newScene = new Scene(newPane, 500, 300);
-            childCount.setScene(newScene);
-            childCount.show();
-
-        }
-    }
-     */
 }
