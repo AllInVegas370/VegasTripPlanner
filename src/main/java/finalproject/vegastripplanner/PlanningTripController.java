@@ -274,7 +274,8 @@ public class PlanningTripController {
         try {
 
             file.getParentFile().mkdirs();
-            /* Save for later to link usernames to objects
+            /*
+            Save for later to link usernames to objects
             Map<String, Trip> trips = new HashMap<>();
             if(file.exists() && file.length() > 0) {
                 trips = mapper.readValue(file, new TypeReference<HashMap<String, Trip>>(){});
@@ -286,7 +287,7 @@ public class PlanningTripController {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());//Handles LocalDate[Start and End dates]
-
+            */
             List<Trip> trips = new ArrayList<>();
             if(file.exists() && file.length() > 0){
                 trips = mapper.readValue(file, new TypeReference<ArrayList<Trip>>(){});
@@ -294,9 +295,7 @@ public class PlanningTripController {
             if(trips.contains(trip)){
                 return;
             }
-
             trips.add(trip);
-
             mapper.writeValue(file, trips);
 
         } catch (IOException e) {
