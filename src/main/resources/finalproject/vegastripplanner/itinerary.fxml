@@ -10,22 +10,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="browse-root" stylesheets="@browse.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.ItineraryController">   <top>
-      <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="62.0" prefWidth="450.0" BorderPane.alignment="CENTER">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="browse-root" stylesheets="@browse.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.ItineraryController">   <top>
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="80.0" prefWidth="450.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets left="150.0" />
          </BorderPane.margin>
          <children>
+            <Label prefHeight="26.0" prefWidth="123.0" styleClass="section-title" text="Days Planned">
+               <HBox.margin>
+                  <Insets left="15.0" top="51.0" />
+               </HBox.margin>
+            </Label>
             <Button fx:id="back" mnemonicParsing="false" onAction="#onReturnButtonClicked" prefHeight="27.0" prefWidth="98.0" styleClass="nav-button-active" text="Return">
                <HBox.margin>
-                  <Insets left="330.0" top="10.0" />
+                  <Insets left="200.0" top="10.0" />
                </HBox.margin>
             </Button>
          </children>
       </HBox>
    </top>
    <left>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="462.0" prefWidth="142.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="142.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
@@ -38,22 +43,26 @@
                   <Insets />
                </VBox.margin>
             </Label>
-            <Label alignment="CENTER" prefHeight="23.0" prefWidth="120.0" styleClass="section-title" text="Current Items" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="23.0" prefWidth="120.0" styleClass="section-title" text="Current List" textAlignment="CENTER">
                <VBox.margin>
-                  <Insets left="10.0" top="35.0" />
+                  <Insets left="10.0" top="20.0" />
                </VBox.margin>
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <ListView prefHeight="326.0" prefWidth="142.0" styleClass="detail-scroll" />
+            <ListView prefHeight="312.0" prefWidth="142.0" styleClass="places-list" />
          </children>
       </VBox>
    </left>
    <center>
       <ScrollPane styleClass="page-scroll" BorderPane.alignment="CENTER">
          <content>
-            <HBox prefHeight="100.0" prefWidth="458.0" />
+            <HBox prefHeight="326.0" prefWidth="458.0">
+               <children>
+                  <ListView prefHeight="326.0" prefWidth="154.0" styleClass="places-list" />
+               </children>
+            </HBox>
          </content>
       </ScrollPane>
    </center>
