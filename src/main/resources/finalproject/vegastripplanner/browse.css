@@ -32,6 +32,7 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
 .browse-root .nav-button {
     -fx-background-color: -input-bg;
     -fx-border-color: -border;
@@ -43,6 +44,19 @@
     -fx-border-color: -green;
     -fx-text-fill: -input-bg;
     -fx-cursor: default;
+}
+
+/*---------- Itinerary button ----------*/
+.browse-root .nav-button-active {
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 22 12 22;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 /* ---------- Page scroll area ---------- */

@@ -67,6 +67,7 @@ public class BrowsePlacesController {
     @FXML private Label detailAddress;
     @FXML private Button saveButton;
     @FXML private Button directionsButton;
+    @FXML private Button itineraryButton;
 
     // ---- settings you may want to change ----
     private static final String DATABASE_FILE = "AllInVegas.db";
@@ -582,5 +583,26 @@ public class BrowsePlacesController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setHeaderText(null);
         alert.showAndWait();
+    }
+
+    // ---------------------------------------------------------------
+    //  Itinerary
+    // ---------------------------------------------------------------
+    @FXML
+    protected void onItineraryClicked(ActionEvent event) throws IOException{
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("itinerary.fxml"));
+            Parent root = loader.load();
+
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            window.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
+            window.setFullScreenExitHint("");
+            window.setFullScreen(true);
+            window.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
