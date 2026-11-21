@@ -10,12 +10,13 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.awt.Button;
+import javafx.scene.control.Button;
 import java.io.IOException;
 
 public class ItineraryController {
     @FXML
     private Button back;
+
 
     @FXML
     protected void onReturnButtonClicked(ActionEvent event) {
