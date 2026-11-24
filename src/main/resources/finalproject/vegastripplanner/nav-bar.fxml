@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- The top bar shared by Browse places, My dashboard, Account settings and Itinerary.
+Pages pull it w/  <fx:include fx:id="navBar" source="nav-bar.fxml"
+& tell it which button to highlight w/ navBarController.setActive(NavBarController.BROWSE); -->
+
+<HBox alignment="TOP_LEFT" styleClass="aiv-nav" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.NavBarController">
+    <children>
+        <VBox spacing="5.0">
+            <children>
+                <Label styleClass="aiv-brand" text="ALL IN VEGAS" />
+                <Label styleClass="aiv-brand-tagline" text="YOUR TRIP. YOUR VEGAS." />
+            </children>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <HBox alignment="CENTER_RIGHT" spacing="16.0">
+            <children>
+                <Button fx:id="browseNavButton" mnemonicParsing="false" onAction="#onBrowseClicked" styleClass="aiv-nav-link" text="Browse places" />
+                <Button fx:id="dashboardNavButton" mnemonicParsing="false" onAction="#onDashboardClicked" styleClass="aiv-nav-link" text="My dashboard" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" spacing="16.0">
+            <HBox.margin>
+                <Insets left="64.0" />
+            </HBox.margin>
+            <children>
+                <Button fx:id="accountNavButton" mnemonicParsing="false" onAction="#onAccountClicked" styleClass="aiv-nav-link" text="Account settings" />
+                <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#onLogOutClicked" styleClass="aiv-nav-link" text="Log out" />
+            </children>
+        </HBox>
+    </children>
+</HBox>
