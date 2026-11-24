@@ -36,7 +36,7 @@
                         <Region HBox.hgrow="ALWAYS" />
                         <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="709.0" spacing="12.0">
                             <children>
-                        <Button fx:id="itineraryButton" mnemonicParsing="false" onAction="#onItineraryClicked" styleClass="nav-button" text="Your Itinirary" />
+                                <Button fx:id="itineraryButton" mnemonicParsing="false" onAction="#onItineraryClicked" styleClass="nav-button" text="Your Itinirary" />
                                 <Button fx:id="browseNavButton" mnemonicParsing="false" styleClass="nav-button-active" text="Browse places" />
                                 <Button fx:id="dashboardButton" mnemonicParsing="false" onAction="#onComingSoonClicked" styleClass="nav-button" text="My dashboard" />
                                 <Button fx:id="accountSettingsButton" mnemonicParsing="false" onAction="#onComingSoonClicked" styleClass="nav-button" text="Account settings">
@@ -186,6 +186,7 @@
                                                         <HBox spacing="12.0">
                                                             <children>
                                                                 <Button fx:id="saveButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveClicked" prefWidth="0.0" styleClass="primary-button" text="Save to my trip" HBox.hgrow="ALWAYS" />
+                                                                <Button fx:id="favoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFavoriteClicked" prefWidth="0.0" styleClass="secondary-button" text="♡ Favorite" HBox.hgrow="ALWAYS" />
                                                                 <Button fx:id="directionsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDirectionsClicked" prefWidth="0.0" styleClass="secondary-button" text="Get directions" HBox.hgrow="ALWAYS" />
                                                             </children>
                                                         </HBox>

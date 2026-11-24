@@ -118,7 +118,7 @@ public class MainController {
             e.printStackTrace();
         }
     }
-        
+
     // If someone is already signed in (e.g. they came back with "Return"), greet them.
     @FXML
     public void initialize() {

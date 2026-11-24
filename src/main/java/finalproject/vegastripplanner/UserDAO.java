@@ -143,6 +143,19 @@ public class UserDAO {
         }
     }
 
+    /** The category_IDs the user picked as interests (empty list if none). */
+    public static List<Integer> getInterests(int userId) throws SQLException {
+        List<Integer> ids = new ArrayList<>();
+        try (Connection c = Database.connect();
+             PreparedStatement ps = c.prepareStatement(
+                     "SELECT category_ID FROM userInterestsTable WHERE user_ID = ?")) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) ids.add(rs.getInt(1));
+            }
+        }
+        return ids;
+    }
     /** Loads saved preferences to pre-fill the Planning Trip page, or null if none saved yet. */
     public static Preferences getPreferences(int userId) throws SQLException {
         try (Connection c = Database.connect()) {

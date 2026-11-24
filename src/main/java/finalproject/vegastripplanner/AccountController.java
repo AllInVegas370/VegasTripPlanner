@@ -8,15 +8,12 @@ import javafx.scene.control.*;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.IOException;
-import java.nio.file.StandardOpenOption;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class AccountController {
-    private static final Path DATA_FILE = Paths.get("UNPW", "users.txt");
+    private static final String ERROR_COLOR = "#c62828";
 
     @FXML
     private TextField usernameField, firstNameField, lastNameField, contactField;
@@ -53,21 +50,32 @@ public class AccountController {
 
         // Nothing is saved if a field is empty or the passwords don't match
         if (username.isEmpty() || firstName.isEmpty() || lastName.isEmpty()
-                || contact.isEmpty() || password.isEmpty() || birthday == null
-                || !password.equals(confirmPassword)) {
+                || contact.isEmpty() || password.isEmpty() || birthday == null) {
+            showMessage("Please fill in every field.", ERROR_COLOR);
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            showMessage("Your passwords don't match.", ERROR_COLOR);
             return;
         }
 
+        // The contact box takes an email OR a phone number: anything with an @ is treated as an email
+        String email = contact.contains("@") ? contact : null;
+        String phone = contact.contains("@") ? null : contact;
+
         try {
-            // Fields are separated by commas; birthday is saved as yyyy-MM-dd
-            String line = String.join(",",
-                    username, firstName, lastName, contact, birthday.toString(), password)
-                    + System.lineSeparator();
-            Files.writeString(DATA_FILE, line,
-                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            System.out.println("Saved to: " + DATA_FILE.toAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
+            // Saves to usersTable in AllInVegas.db (the password is stored scrambled, never as typed)
+            UserDAO.createAccount(firstName, lastName, username, password, email, phone, birthday);
+        } catch (SQLException e) {
+            String error = String.valueOf(e.getMessage());
+            if (error.contains("usersTable.username")) {
+                showMessage("That username is already taken.", ERROR_COLOR);
+            } else if (error.contains("usersTable.email")) {
+                showMessage("An account with that email already exists.", ERROR_COLOR);
+            } else {
+                e.printStackTrace();
+                showMessage("Couldn't create the account. Please try again.", ERROR_COLOR);
+            }
             return;
         }
 
@@ -79,13 +87,13 @@ public class AccountController {
         confirmPasswordField.clear();
         birthdayPicker.setValue(null);
 
-        showSavedMessage();
+        showMessage("Account created! You can sign in now.", "#323232");
     }
 
-    // Small message that appears on top of the window and disappears after 10 seconds.
-    private void showSavedMessage() {
-        Label message = new Label("Account saved!");
-        message.setStyle("-fx-background-color: #323232; -fx-text-fill: white;"
+    // Small message that appears on top of the window and disappears after a few seconds.
+    private void showMessage(String text, String backgroundColor) {
+        Label message = new Label(text);
+        message.setStyle("-fx-background-color: " + backgroundColor + "; -fx-text-fill: white;"
                 + "-fx-padding: 8 16 8 16; -fx-background-radius: 6;");
 
         Popup popup = new Popup();
@@ -98,33 +106,8 @@ public class AccountController {
         popup.setX(stage.getX() + (stage.getWidth() - message.getWidth()) / 2);
         popup.setY(stage.getY() + 60);
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(10));
+        PauseTransition delay = new PauseTransition(Duration.seconds(6));
         delay.setOnFinished(e -> popup.hide());
         delay.play();
     }
-
-    /*@FXML
-    protected void onSignUpButtonClicked(ActionEvent event) throws IOException {
-        System.out.println("Clicked!!");
-
-        //Save username and password
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        //Save in UNPW file
-
-        if(!username.isEmpty() && !password.isEmpty()) {
-            try {
-                Path ListPath = Paths.get("UNPW", "List.txt");
-                String line = username + " " + password + "\n";
-
-                // Writes everything in one shot
-                Files.writeString(ListPath, line, StandardOpenOption.APPEND);
-
-                System.out.println("Username and Password Saved!");
-            } catch (IOException e) {
-                System.err.println("Error while saving" + e.getMessage());
-            }
-        }
-    }*/
 }
