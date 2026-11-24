@@ -5,7 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 // The one class that reads places from the database, so the UI never has to write SQL.
 // Connections come from Database.connect(), the same as UserDAO.
@@ -53,5 +55,15 @@ public class PlaceDao {
             e.printStackTrace();
         }
         return places;
+    }
+
+    // Every place keyed by its place_ID, for pages that only know the IDs
+    // (favorites, itinerary stops) but want the category, price, address or map position.
+    public Map<Integer, Place> getPlacesById() {
+        Map<Integer, Place> byId = new LinkedHashMap<>();
+        for (Place p : getAllPlaces()) {
+            byId.put(p.id(), p);
+        }
+        return byId;
     }
 }

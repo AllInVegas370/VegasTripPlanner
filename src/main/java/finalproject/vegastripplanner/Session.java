@@ -3,7 +3,7 @@ package finalproject.vegastripplanner;
 /**
  * Remembers who is logged in (and which trip they're working on),
  * so every page/controller can get to it.
- *
+
  *   Session.login(user);                    // after UserDAO.login(...) succeeds
  *   int id = Session.getUser().id();        // on any page
  *   if (!Session.isLoggedIn()) { ... }      // guest browsing via "Skip for now" / "Explore"
@@ -27,6 +27,11 @@ public final class Session {
     public static void logout() {
         currentUser = null;
         currentItineraryId = null;
+    }
+
+    /** After the profile is edited: same person, fresh details (keeps the current trip). */
+    public static void updateUser(UserDAO.User user) {
+        currentUser = user;
     }
 
     public static UserDAO.User getUser() { return currentUser; }

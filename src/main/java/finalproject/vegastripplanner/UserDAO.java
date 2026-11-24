@@ -34,6 +34,12 @@ public class UserDAO {
     public record ItineraryItem(int itemId, int placeId, String placeName,
                                 int dayNumber, int sortOrder) {}
 
+    /** Everything the Account settings page shows. Dates can be null. */
+    public record AccountSettings(String firstName, String lastName, String username,
+                                  String email, String phone, String timeZone, String distanceUnits,
+                                  boolean tripReminders, boolean discoveries,
+                                  LocalDate passwordChangedOn, LocalDate memberSince) {}
+
     // ==================================================================
     // ACCOUNTS
     // ==================================================================
@@ -73,11 +79,13 @@ public class UserDAO {
         }
     }
 
-    /** Returns the User if username + password match, otherwise null. */
-    public static User login(String username, String password) throws SQLException {
+    /** Returns the User if the username (or email) + password match, otherwise null. */
+    public static User login(String usernameOrEmail, String password) throws SQLException {
         try (Connection c = Database.connect();
-             PreparedStatement ps = c.prepareStatement("SELECT * FROM usersTable WHERE username = ?")) {
-            ps.setString(1, username.trim());
+             PreparedStatement ps = c.prepareStatement(
+                     "SELECT * FROM usersTable WHERE username = ? OR email = ? LIMIT 1")) {
+            ps.setString(1, usernameOrEmail.trim());
+            ps.setString(2, usernameOrEmail.trim());
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
                 String expected = rs.getString("password_hash");
@@ -88,6 +96,134 @@ public class UserDAO {
                         rs.getString("email"), rs.getString("phone"));
             }
         }
+    }
+
+    // ==================================================================
+    // ACCOUNT SETTINGS
+    // ==================================================================
+
+    public static AccountSettings getAccountSettings(int userId) throws SQLException {
+        try (Connection c = Database.connect();
+             PreparedStatement ps = c.prepareStatement("SELECT * FROM usersTable WHERE user_ID = ?")) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return null;
+                return new AccountSettings(rs.getString("first_name"), rs.getString("last_name"),
+                        rs.getString("username"), rs.getString("email"), rs.getString("phone"),
+                        rs.getString("time_zone"), rs.getString("distance_units"),
+                        rs.getInt("notify_trip_reminders") != 0, rs.getInt("notify_discoveries") != 0,
+                        timestampToDate(rs.getString("password_changed_at")),
+                        timestampToDate(rs.getString("created_at")));
+            }
+        }
+    }
+
+    /** Saves the Profile details card and returns the updated User (for Session).
+     *  Throws SQLException mentioning "usersTable.email" if another account has that email,
+     *  or "CHECK constraint" if both email and phone are empty. */
+    public static User updateProfile(int userId, String first, String last, String email, String phone,
+                                     String timeZone, String distanceUnits) throws SQLException {
+        String sql = """
+            UPDATE usersTable
+            SET first_name = ?, last_name = ?, email = ?, phone = ?, time_zone = ?, distance_units = ?
+            WHERE user_ID = ?""";
+        try (Connection c = Database.connect(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, first.trim());
+            ps.setString(2, last.trim());
+            ps.setString(3, blankToNull(email));
+            ps.setString(4, blankToNull(phone));
+            ps.setString(5, blankToNull(timeZone));
+            ps.setString(6, blankToNull(distanceUnits));
+            ps.setInt(7, userId);
+            ps.executeUpdate();
+        }
+        AccountSettings saved = getAccountSettings(userId);
+        return new User(userId, saved.firstName(), saved.lastName(), saved.username(),
+                saved.email(), saved.phone());
+    }
+
+    public static void updateNotifications(int userId, boolean tripReminders, boolean discoveries)
+            throws SQLException {
+        runUpdate("UPDATE usersTable SET notify_trip_reminders = ?, notify_discoveries = ? WHERE user_ID = ?",
+                tripReminders ? 1 : 0, discoveries ? 1 : 0, userId);
+    }
+
+    /** Changes the password if the current one is right. Returns false if it was wrong. */
+    public static boolean changePassword(int userId, String currentPassword, String newPassword)
+            throws SQLException {
+        try (Connection c = Database.connect()) {
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT password_hash, password_salt FROM usersTable WHERE user_ID = ?")) {
+                ps.setInt(1, userId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) return false;
+                    String expected = rs.getString("password_hash");
+                    String actual = hashPassword(currentPassword, rs.getString("password_salt"));
+                    if (!MessageDigest.isEqual(expected.getBytes(), actual.getBytes())) return false;
+                }
+            }
+            String salt = newSalt();
+            try (PreparedStatement ps = c.prepareStatement("""
+                    UPDATE usersTable
+                    SET password_hash = ?, password_salt = ?, password_changed_at = datetime('now')
+                    WHERE user_ID = ?""")) {
+                ps.setString(1, hashPassword(newPassword, salt));
+                ps.setString(2, salt);
+                ps.setInt(3, userId);
+                ps.executeUpdate();
+            }
+            return true;
+        }
+    }
+
+    /** Deletes the account. Preferences, favorites and trips go with it (ON DELETE CASCADE). */
+    public static void deleteAccount(int userId) throws SQLException {
+        runUpdate("DELETE FROM usersTable WHERE user_ID = ?", userId);
+    }
+
+    /** A plain-text copy of everything saved for this user (for "Download data"). */
+    public static String exportData(int userId) throws SQLException {
+        StringBuilder out = new StringBuilder();
+        AccountSettings a = getAccountSettings(userId);
+        out.append("ALL IN VEGAS - YOUR DATA\n\n");
+        out.append("ACCOUNT\n");
+        out.append("Name: ").append(a.firstName()).append(' ').append(a.lastName()).append('\n');
+        out.append("Username: ").append(a.username()).append('\n');
+        out.append("Email: ").append(orDash(a.email())).append('\n');
+        out.append("Phone: ").append(orDash(a.phone())).append('\n');
+        out.append("Time zone: ").append(orDash(a.timeZone())).append('\n');
+        out.append("Distance units: ").append(orDash(a.distanceUnits())).append('\n');
+        out.append("Member since: ").append(a.memberSince() == null ? "-" : a.memberSince()).append("\n\n");
+
+        Preferences p = getPreferences(userId);
+        out.append("TRIP PREFERENCES\n");
+        if (p == null) {
+            out.append("None saved\n");
+        } else {
+            out.append("Adults: ").append(p.adults()).append(", children: ").append(p.children()).append('\n');
+            out.append("Arrival: ").append(p.arrival() == null ? "-" : p.arrival())
+                    .append(", departure: ").append(p.departure() == null ? "-" : p.departure()).append('\n');
+        }
+
+        out.append("\nFAVORITES\n");
+        List<FavoritePlace> favorites = getFavorites(userId);
+        if (favorites.isEmpty()) out.append("None\n");
+        for (FavoritePlace f : favorites) {
+            out.append("- ").append(f.placeName()).append(" (").append(orDash(f.category())).append(")\n");
+        }
+
+        out.append("\nTRIPS\n");
+        List<Itinerary> trips = getItineraries(userId);
+        if (trips.isEmpty()) out.append("None\n");
+        for (Itinerary t : trips) {
+            out.append("- ").append(t.name()).append(" (")
+                    .append(t.startDate() == null ? "no dates" : t.startDate() + " to " + orDash(String.valueOf(t.endDate())))
+                    .append(")\n");
+            for (ItineraryItem item : getItineraryItems(t.id())) {
+                out.append("    Day ").append(item.dayNumber()).append(": ").append(item.placeName()).append('\n');
+            }
+        }
+        return out.toString();
     }
 
     // ==================================================================
@@ -401,6 +537,15 @@ public class UserDAO {
     /** "YYYY-MM-DD" -> LocalDate (or null). */
     private static LocalDate textToDate(String s) {
         return (s == null || s.isBlank()) ? null : LocalDate.parse(s);
+    }
+
+    /** "YYYY-MM-DD HH:MM:SS" (SQLite datetime) -> LocalDate (or null). */
+    private static LocalDate timestampToDate(String s) {
+        return (s == null || s.length() < 10) ? null : LocalDate.parse(s.substring(0, 10));
+    }
+
+    private static String orDash(String s) {
+        return (s == null || s.isBlank() || s.equals("null")) ? "-" : s;
     }
 
     private static String blankToNull(String s) {
