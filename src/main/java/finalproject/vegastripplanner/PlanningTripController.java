@@ -1,9 +1,5 @@
 package finalproject.vegastripplanner;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,11 +19,13 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class PlanningTripController {
@@ -57,16 +55,33 @@ public class PlanningTripController {
     @FXML
     private DatePicker startDate, endDate;
 
-    private Trip userTrip;
-
     private int adultCount = 2;
     private int childCount = 0;
 
     private static final int MAX_GUESTS = 10;
 
+    // Budget card (its userData in planning-trip.fxml) -> price_ID in priceTable
+    //   priceTable: 1 = Free, 2 = $, 3 = $$, 4 = $$$
+    private static final Map<String, Integer> BUDGET_TO_PRICE_ID = Map.of(
+            "UNDER_150", 2,
+            "150_300", 3,
+            "OVER_300", 4);
+
+    // Interest card -> category_ID in categoryTable
+    //   1 restaurant, 2 bar, 3 hotel, 4 entertainment, 5 shopping, 6 casino, 7 attraction
+    private Map<ToggleButton, Integer> interestCategories;
+
 
     @FXML
     public void initialize() {
+        interestCategories = Map.of(
+                diningToggle, 1,
+                entertainmentToggle, 4,
+                attractionsToggle, 7,
+                casinosToggle, 6,
+                hotelsToggle, 3,
+                shoppingToggle, 5);
+
         // Start with the middle budget card selected, like the design.
         budgetGroup.selectToggle(budgetGroup.getToggles().get(1));
 
@@ -78,7 +93,39 @@ public class PlanningTripController {
             }
         });
 
+        loadSavedPreferences();
         updateCounts();
+    }
+
+    // If the signed-in user saved preferences before, fill the page in with them.
+    private void loadSavedPreferences() {
+        if (!Session.isLoggedIn()) return;
+
+        UserDAO.Preferences saved;
+        try {
+            saved = UserDAO.getPreferences(Session.getUser().id());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (saved == null) return;   // nothing saved yet: keep the defaults
+
+        adultCount = saved.adults();
+        childCount = saved.children();
+        startDate.setValue(saved.arrival());
+        endDate.setValue(saved.departure());
+
+        for (Map.Entry<ToggleButton, Integer> entry : interestCategories.entrySet()) {
+            entry.getKey().setSelected(saved.interestCategoryIds().contains(entry.getValue()));
+        }
+
+        if (saved.budgetPriceId() != null) {
+            for (Toggle card : budgetGroup.getToggles()) {
+                if (saved.budgetPriceId().equals(BUDGET_TO_PRICE_ID.get((String) card.getUserData()))) {
+                    budgetGroup.selectToggle(card);
+                }
+            }
+        }
     }
 
 
@@ -136,13 +183,13 @@ public class PlanningTripController {
         showPage(event, "main-page.fxml");
     }
 
-    // "Skip for now - browse places": go to browsing without saving a trip.
+    // "Skip for now - browse places": go to browsing without saving anything.
     @FXML
     protected void onSkipButtonClicked(ActionEvent event) {
         showBrowsingPage(event);
     }
 
-    // "Find my Vegas": save the choices, then go to browsing.
+    // "Find my Vegas": save the preferences, start a new trip with these dates, then go to browsing.
     @FXML
     protected void onSubmitButtonClicked(ActionEvent event) {
         LocalDate userStartDate = startDate.getValue();   // null if left empty
@@ -155,16 +202,26 @@ public class PlanningTripController {
             return;
         }
 
-        userTrip = new Trip(
-                getBudgetText(),
-                String.valueOf(childCount),
-                String.valueOf(adultCount),
-                getSelectedInterests(),
-                userStartDate,
-                userEndDate);
-        objsToFile(userTrip);
+        if (!Session.isLoggedIn()) {
+            showMessage("Sign in to save your preferences and trips. For now, here are places to browse.");
+            showBrowsingPage(event);
+            return;
+        }
 
-        System.out.println("Saved trip, switching screens");
+        int userId = Session.getUser().id();
+        try {
+            UserDAO.savePreferences(userId, getBudgetPriceId(), adultCount, childCount,
+                    userStartDate, userEndDate, getSelectedCategoryIds());
+
+            // Each "Find my Vegas" starts a new trip; "Save to my trip" on the browse page adds to it.
+            int tripId = UserDAO.createItinerary(userId, tripName(userStartDate, userEndDate),
+                    userStartDate, userEndDate);
+            Session.setCurrentItineraryId(tripId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showMessage("Couldn't save your trip. Please try again.");
+            return;
+        }
 
         showBrowsingPage(event);
     }
@@ -193,7 +250,7 @@ public class PlanningTripController {
     }
 
     private void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setHeaderText(null);
         alert.showAndWait();
     }
@@ -203,103 +260,33 @@ public class PlanningTripController {
     //  Reading the choices
     // ---------------------------------------------------------------
 
-    // Turns the selected budget card into readable text for the saved file.
-    private String getBudgetText() {
+    // The selected budget card as a price_ID (null if somehow none is selected)
+    private Integer getBudgetPriceId() {
         Toggle chosen = budgetGroup.getSelectedToggle();
-        if (chosen == null) {
-            return "";
-        }
-        String code = (String) chosen.getUserData();
-        return switch (code) {
-            case "UNDER_150" -> "Under $150";
-            case "150_300" -> "$150-$300";
-            default -> "$300+";
-        };
+        return chosen == null ? null : BUDGET_TO_PRICE_ID.get((String) chosen.getUserData());
     }
 
-    // Collects every interest that is switched on, e.g. "Dining, Shows".
-    // An empty string means no interests were picked.
-    private String getSelectedInterests() {
-        List<String> picked = new ArrayList<>();
-        List<ToggleButton> all = List.of(diningToggle, entertainmentToggle, attractionsToggle,
-                casinosToggle, hotelsToggle, shoppingToggle);
-        for (ToggleButton interest : all) {
-            if (interest.isSelected()) {
-                picked.add(interest.getText());
+    // The category_IDs of every interest that is switched on (empty = none picked)
+    private List<Integer> getSelectedCategoryIds() {
+        List<Integer> picked = new ArrayList<>();
+        for (Map.Entry<ToggleButton, Integer> entry : interestCategories.entrySet()) {
+            if (entry.getKey().isSelected()) {
+                picked.add(entry.getValue());
             }
         }
-        return String.join(", ", picked);
+        // Dining covers bars too
+        if (diningToggle.isSelected()) {
+            picked.add(2);
+        }
+        return picked;
     }
 
-    public static class Trip
-    {
-        private String budget;
-        private String children;
-        private String adults;
-        private String interests;
-        private LocalDate startDate;
-        private LocalDate endDate;
-
-        public Trip(){}
-
-        public Trip(String budget, String children,
-                    String adults, String interests, LocalDate startDate, LocalDate endDate)
-        {
-            this.budget = budget;//Show only ranges of prices to user
-            this.children = children;
-            this.adults = adults; //Same as children
-            this.interests = interests;
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-
-        public String getBudget(){return budget;}
-        public String getChildren(){return children;}
-        public String getAdults(){return adults;}
-        public String getInterests(){return interests;}
-        public LocalDate getStartDate(){return startDate;}
-        public LocalDate getEndDate(){return endDate;}
-
-    }
-
-    public void objsToFile( Trip trip)
-    {
-
-        String filePath = "userData/trip.json";
-        ObjectMapper mapper = new ObjectMapper();
-        File file = new File(filePath);
-        mapper.registerModule(new JavaTimeModule());//Handles LocalDate[Start and End dates]
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        try {
-
-            file.getParentFile().mkdirs();
-            /*
-            Save for later to link usernames to objects
-            Map<String, Trip> trips = new HashMap<>();
-            if(file.exists() && file.length() > 0) {
-                trips = mapper.readValue(file, new TypeReference<HashMap<String, Trip>>(){});
-            }
-
-            if(trips.containsKey(username)){
-                return;
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());//Handles LocalDate[Start and End dates]
-            */
-            List<Trip> trips = new ArrayList<>();
-            if(file.exists() && file.length() > 0){
-                trips = mapper.readValue(file, new TypeReference<ArrayList<Trip>>(){});
-            }
-            if(trips.contains(trip)){
-                return;
-            }
-            trips.add(trip);
-            mapper.writeValue(file, trips);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    // e.g. "Vegas Trip · Dec 4 – Dec 7", or "My Vegas Trip" when there are no dates yet
+    private static String tripName(LocalDate start, LocalDate end) {
+        if (start == null) return "My Vegas Trip";
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MMM d");
+        return end == null
+                ? "Vegas Trip · " + start.format(f)
+                : "Vegas Trip · " + start.format(f) + " – " + end.format(f);
     }
 }
