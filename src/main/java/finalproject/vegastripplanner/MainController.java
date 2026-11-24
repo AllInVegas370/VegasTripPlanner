@@ -122,7 +122,7 @@
                 e.printStackTrace();
             }
         }
-
+        
         @FXML
         protected void onSignInButtonClicked(ActionEvent event) throws IOException {
             String username = usernameLabel.getText().trim();
