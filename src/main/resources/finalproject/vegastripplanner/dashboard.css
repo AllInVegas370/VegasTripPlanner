@@ -1,0 +1,48 @@
+/* =====================================================================
+   My dashboard (dashboard.fxml)
+   Loaded after theme.css, so the -aiv-... colours come from there.
+   ===================================================================== */
+
+/* ---------- Stats row ---------- */
+.dash-stat {
+    -fx-background-color: -aiv-surface;
+    -fx-background-radius: 8;
+    -fx-border-color: -aiv-border;
+    -fx-border-radius: 8;
+    -fx-padding: 14 18 14 18;
+    -fx-min-height: 72px;
+    -fx-spacing: 16;
+}
+.dash-stat-label { -fx-text-fill: -aiv-peach; -fx-font-size: 10px; -fx-font-weight: bold; }
+.dash-stat-value { -fx-text-fill: -aiv-text; -fx-font-size: 20px; -fx-font-weight: bold; }
+.dash-stat-detail { -fx-text-fill: -aiv-muted; -fx-font-size: 12px; -fx-text-alignment: right; }
+
+/* ---------- Trip cards ---------- */
+.dash-trip { -fx-min-height: 238px; }
+.dash-trip-body { -fx-padding: 26 24 26 24; -fx-spacing: 12; }
+.dash-trip-status { -fx-text-fill: -aiv-peach; -fx-font-size: 10px; -fx-font-weight: bold; }
+.dash-trip-name { -fx-text-fill: -aiv-text; -fx-font-size: 24px; }
+.dash-trip-dates { -fx-text-fill: -aiv-muted; -fx-font-size: 14px; }
+.dash-trip-details { -fx-text-fill: -aiv-muted; -fx-font-size: 13px; }
+
+/* ---------- Favorite cards ---------- */
+.dash-fav-body { -fx-padding: 18 20 18 20; -fx-spacing: 12; -fx-min-height: 138px; }
+.dash-fav-category { -fx-text-fill: -aiv-peach; -fx-font-size: 10px; -fx-font-weight: bold; }
+.dash-fav-price { -fx-text-fill: -aiv-lavender; -fx-font-size: 12px; -fx-font-weight: bold; }
+.dash-fav-name { -fx-text-fill: -aiv-text; -fx-font-size: 18px; -fx-font-weight: bold; }
+.dash-saved {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-muted;
+    -fx-font-size: 12px;
+    -fx-padding: 2 0 2 0;
+    -fx-cursor: hand;
+}
+.dash-saved:hover { -fx-text-fill: -aiv-peach; }
+
+/* ---------- Empty states ---------- */
+.dash-empty { -fx-padding: 28; -fx-spacing: 12; }
+
+/* ---------- Account strip ---------- */
+.dash-account { -fx-padding: 14 20 14 20; -fx-min-height: 54px; }
+.dash-account-title { -fx-text-fill: -aiv-text; -fx-font-size: 15px; -fx-font-weight: bold; }

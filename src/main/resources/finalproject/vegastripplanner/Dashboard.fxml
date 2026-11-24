@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- My dashboard. The trip cards and favorite cards are built in DashboardController,
+     so the two GridPanes below start empty. -->
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="aiv-page" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.DashboardController">
+    <stylesheets>
+        <URL value="@theme.css" />
+        <URL value="@dashboard.css" />
+    </stylesheets>
+
+    <!-- HEADER: shared navigation bar -->
+    <top>
+        <VBox>
+            <padding>
+                <Insets left="48.0" right="48.0" top="30.0" />
+            </padding>
+            <children>
+                <fx:include fx:id="navBar" source="nav-bar.fxml" />
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+            <content>
+                <VBox spacing="24.0">
+                    <padding>
+                        <Insets bottom="24.0" left="48.0" right="48.0" />
+                    </padding>
+                    <children>
+
+                        <!-- heading -->
+                        <HBox alignment="CENTER_LEFT" styleClass="aiv-page-heading">
+                            <children>
+                                <VBox spacing="6.0">
+                                    <children>
+                                        <Label fx:id="greetingLabel" styleClass="aiv-eyebrow" text="LESS PLANNING. MORE LIVING." />
+                                        <Label styleClass="aiv-title" text="Your Vegas, all in one place." />
+                                        <Label styleClass="aiv-subtitle" text="Your saved spots and great plans, ready for the next adventure." />
+                                    </children>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button fx:id="createItineraryButton" minWidth="184.0" mnemonicParsing="false" onAction="#onCreateItineraryClicked" styleClass="aiv-button-primary" text="+  Create itinerary" />
+                            </children>
+                        </HBox>
+
+                        <!-- three quick stats -->
+                        <HBox spacing="24.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefWidth="0.0" styleClass="dash-stat" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="3.0">
+                                            <children>
+                                                <Label styleClass="dash-stat-label" text="NEXT ESCAPE" />
+                                                <Label fx:id="nextTripValue" styleClass="dash-stat-value" text="—" />
+                                            </children>
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="nextTripDetail" styleClass="dash-stat-detail" text="" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefWidth="0.0" styleClass="dash-stat" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="3.0">
+                                            <children>
+                                                <Label styleClass="dash-stat-label" text="YOUR PLANS" />
+                                                <Label fx:id="tripsValue" styleClass="dash-stat-value" text="—" />
+                                            </children>
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="tripsDetail" styleClass="dash-stat-detail" text="" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefWidth="0.0" styleClass="dash-stat" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="3.0">
+                                            <children>
+                                                <Label styleClass="dash-stat-label" text="SAVED FOR LATER" />
+                                                <Label fx:id="favoritesValue" styleClass="dash-stat-value" text="—" />
+                                            </children>
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label styleClass="dash-stat-detail" text="Good ideas, ready when you are" wrapText="true" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <!-- itineraries -->
+                        <VBox spacing="16.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label styleClass="aiv-section-title" text="Your itineraries" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="tripsHint" styleClass="aiv-small" text="" />
+                                    </children>
+                                </HBox>
+                                <GridPane fx:id="tripsGrid" hgap="24.0" vgap="24.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50.0" />
+                                        <ColumnConstraints percentWidth="50.0" />
+                                    </columnConstraints>
+                                </GridPane>
+                            </children>
+                        </VBox>
+
+                        <!-- favorites -->
+                        <VBox spacing="16.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label styleClass="aiv-section-title" text="Your favorites" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="favoritesHint" styleClass="aiv-small" text="" />
+                                    </children>
+                                </HBox>
+                                <GridPane fx:id="favoritesGrid" hgap="24.0" vgap="24.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.333" />
+                                        <ColumnConstraints percentWidth="33.333" />
+                                        <ColumnConstraints percentWidth="33.333" />
+                                    </columnConstraints>
+                                </GridPane>
+                            </children>
+                        </VBox>
+
+                        <!-- account strip -->
+                        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="aiv-card-soft, dash-account">
+                            <children>
+                                <Label minWidth="-Infinity" styleClass="dash-account-title" text="Make it more you." />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label styleClass="aiv-muted" text="Update your travel preferences, notifications, and account details." />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button fx:id="accountSettingsLink" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAccountSettingsClicked" styleClass="aiv-link" text="Account settings  →" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- FOOTER -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT">
+            <padding>
+                <Insets bottom="20.0" left="48.0" right="48.0" top="12.0" />
+            </padding>
+            <children>
+                <Label styleClass="aiv-footer-text" text="A little planning. A lot of Vegas." />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label styleClass="aiv-footer-text" text="© 2026 All In Vegas" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>
