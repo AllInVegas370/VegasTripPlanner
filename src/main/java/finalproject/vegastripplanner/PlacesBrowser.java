@@ -32,7 +32,7 @@ public class PlacesBrowser extends BorderPane {
     // Pass null to show every place.
     public PlacesBrowser(String categoryFilter) {
         // ---- list of places ----
-        List<Place> places = new PlaceDao("AllInVegas.db").getAllPlaces();
+        List<Place> places = new PlaceDao().getAllPlaces();
         if (categoryFilter != null) {
             // keep only the places whose category matches the button that was clicked
             places = places.stream()

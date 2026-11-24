@@ -19,6 +19,9 @@ public class MainPageApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // Make sure AllInVegas.db exists and has the account/favorites/itinerary tables
+        Database.initialize();
+
         try {
             // 1. Load your Scene Builder FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
