@@ -1,0 +1,120 @@
+/* =====================================================================
+   Itinerary (itinerary.fxml + ItineraryMap)
+   Loaded after theme.css, so the -aiv-... colours come from there.
+   ===================================================================== */
+
+.itin-crumb {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-peach;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.itin-crumb:hover { -fx-underline: true; }
+
+/* ---------- Day tabs ---------- */
+.itin-day {
+    -fx-background-color: -aiv-surface;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-color: -aiv-border;
+    -fx-border-radius: 7;
+    -fx-min-height: 48px;
+    -fx-pref-width: 170px;
+    -fx-padding: 6 14 6 14;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+.itin-day:hover { -fx-border-color: -aiv-border-strong; }
+.itin-day:selected {
+    -fx-background-color: -aiv-surface-selected;
+    -fx-border-color: -aiv-border-selected;
+}
+.itin-day-name { -fx-text-fill: -aiv-text; -fx-font-size: 13px; }
+.itin-day:selected .itin-day-name { -fx-text-fill: -aiv-lavender; }
+.itin-day-places { -fx-text-fill: -aiv-muted; -fx-font-size: 11px; }
+
+.itin-day-title { -fx-text-fill: -aiv-text; -fx-font-size: 17px; -fx-font-weight: bold; }
+.itin-day-count { -fx-text-fill: -aiv-peach; -fx-font-size: 12px; }
+
+/* ---------- Stop cards ---------- */
+.itin-stop { -fx-min-height: 148px; }
+.itin-stop-body { -fx-padding: 16 18 16 18; -fx-spacing: 8; }
+.itin-category { -fx-text-fill: -aiv-muted; -fx-font-size: 10px; -fx-font-weight: bold; }
+.itin-stop-name { -fx-text-fill: -aiv-text; -fx-font-size: 18px; -fx-font-weight: bold; }
+.itin-stop-text { -fx-text-fill: -aiv-muted; -fx-font-size: 12px; }
+.itin-small-action {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-muted;
+    -fx-font-size: 12px;
+    -fx-padding: 2 0 2 0;
+    -fx-cursor: hand;
+}
+.itin-small-action:hover { -fx-text-fill: -aiv-lavender; -fx-underline: true; }
+.itin-stop-link {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-lavender;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 0 2 0;
+    -fx-cursor: hand;
+}
+.itin-stop-link:hover { -fx-underline: true; }
+
+.itin-empty { -fx-padding: 24; -fx-spacing: 10; }
+
+.itin-reminder {
+    -fx-background-color: -aiv-surface-soft;
+    -fx-background-radius: 8;
+    -fx-text-fill: -aiv-muted;
+    -fx-font-size: 12px;
+    -fx-padding: 16;
+}
+
+/* ---------- Map panel ---------- */
+.itin-map-heading { -fx-padding: 18 24 18 24; }
+.itin-map-title { -fx-text-fill: -aiv-text; -fx-font-size: 20px; -fx-font-weight: bold; }
+.itin-map-tag { -fx-text-fill: -aiv-muted; -fx-font-size: 10px; }
+
+.itin-map { -fx-background-color: #1b172a; }
+.itin-map-street { -fx-text-fill: #8f7a99; -fx-font-size: 9px; }
+.itin-map-strip { -fx-text-fill: #8f7a99; -fx-font-size: 10px; -fx-font-weight: bold; }
+.itin-map-pin-number { -fx-text-fill: -aiv-ink; -fx-font-size: 14px; -fx-font-weight: bold; }
+.itin-map-label {
+    -fx-background-color: #302039;
+    -fx-background-radius: 6;
+    -fx-border-color: -aiv-border;
+    -fx-border-radius: 6;
+    -fx-text-fill: -aiv-text;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 10 7 10;
+}
+.itin-map-controls {
+    -fx-background-color: -aiv-surface;
+    -fx-background-radius: 7;
+    -fx-border-color: -aiv-border;
+    -fx-border-radius: 7;
+}
+.itin-map-controls .button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-text;
+    -fx-font-size: 18px;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-pref-width: 36px;
+    -fx-pref-height: 36px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.itin-map-controls .button:hover { -fx-text-fill: -aiv-lavender; }
+.itin-map-disclaimer { -fx-text-fill: -aiv-muted; -fx-font-size: 10px; }
+
+.itin-map-summary { -fx-padding: 22 24 22 24; }
+.itin-overview-label { -fx-text-fill: -aiv-peach; -fx-font-size: 10px; -fx-font-weight: bold; }
+.itin-overview-value { -fx-text-fill: -aiv-text; -fx-font-size: 16px; }

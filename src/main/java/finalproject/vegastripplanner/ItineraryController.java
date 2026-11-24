@@ -1,53 +1,52 @@
 package finalproject.vegastripplanner;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-// The itinerary page: the user's trips on the left, the selected trip day by day
-// in the middle, and their favorites on the right. Everything comes from AllInVegas.db.
+// Itinerary page (itinerary.fxml): one trip, day by day, with a map of the selected day.
+// Which trip: Session.getCurrentItineraryId() (set by the dashboard's trip cards),
+// otherwise the user's newest trip.
 public class ItineraryController {
 
-    @FXML private Button back;
-    @FXML private ListView<UserDAO.Itinerary> tripsList;
-    @FXML private Label tripTitle;
-    @FXML private Label tripDates;
-    @FXML private VBox daysBox;
-    @FXML private ListView<UserDAO.FavoritePlace> favoritesList;
-    @FXML private Button newTripButton, deleteTripButton, addFavoriteButton, removeFavoriteButton;
+    private static final double PHOTO_WIDTH = 120;
+    private static final double STOP_HEIGHT = 148;
+    private static final DateTimeFormatter FULL_DATE = DateTimeFormatter.ofPattern("EEEE, MMM d");
 
-    // Trips without dates can still spread over this many days
-    private static final int MAX_DAYS_WITHOUT_DATES = 14;
+    @FXML private NavBarController navBarController;   // the included nav-bar.fxml
+    @FXML private Label breadcrumbLabel, tripTitle, tripSubtitle;
+    @FXML private Button addPlaceButton, renameButton, deleteTripButton, dashboardCrumb;
+    @FXML private FlowPane dayTabs;
+    @FXML private Label dayTitle, daySubtitle, dayCountLabel;
+    @FXML private VBox stopsBox;
+    @FXML private StackPane mapHolder;
+    @FXML private Label mapSubtitle, mapSummaryTitle, firstStopLabel, lastStopLabel, travelersLabel;
 
-    private static final DateTimeFormatter DAY_FORMAT = DateTimeFormatter.ofPattern("EEE, MMM d");
-    private static final DateTimeFormatter RANGE_FORMAT = DateTimeFormatter.ofPattern("MMM d, yyyy");
-    private static final String SMALL_BUTTON = "-fx-pref-height: 32px; -fx-font-size: 11px; -fx-padding: 0 10 0 10;";
+    private final Map<Integer, Place> placesById = new PlaceDao().getPlacesById();
+    private final ItineraryMap map = new ItineraryMap();
+
+    private UserDAO.Itinerary trip;
+    private List<UserDAO.ItineraryItem> items = List.of();
+    private int selectedDay = 1;
+    private int travelers;
 
 
     // ---------------------------------------------------------------
@@ -56,333 +55,313 @@ public class ItineraryController {
 
     @FXML
     public void initialize() {
-        tripsList.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(UserDAO.Itinerary trip, boolean empty) {
-                super.updateItem(trip, empty);
-                setText(empty || trip == null ? null : trip.name() + "\n" + dateRange(trip));
-            }
-        });
-        favoritesList.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(UserDAO.FavoritePlace fav, boolean empty) {
-                super.updateItem(fav, empty);
-                setText(empty || fav == null ? null : fav.placeName() + "\n" + capitalize(fav.category()));
-            }
-        });
-        tripsList.setPlaceholder(new Label("No trips yet.\nClick \"New trip\" to start one."));
-        favoritesList.setPlaceholder(new Label("No favorites yet.\nUse ♡ Favorite on the browse page."));
+        navBarController.setActive(NavBarController.DASHBOARD);
+
+        // The map keeps the design's 660 x 540 shape at any width
+        mapHolder.getChildren().add(map);
+        mapHolder.prefHeightProperty().bind(mapHolder.widthProperty().multiply(ItineraryMap.ASPECT));
 
         if (!Session.isLoggedIn()) {
-            tripTitle.setText("Sign in to see your trips");
-            tripDates.setText("Your trips and favorites are saved to your account.");
-            for (Button b : List.of(newTripButton, deleteTripButton, addFavoriteButton, removeFavoriteButton)) {
-                b.setDisable(true);
-            }
+            showNoTrip("Sign in to see your trips", "Your trips and favorites are saved to your account.");
             return;
         }
-
-        // Picking a trip shows it and makes it the one "Save to my trip" adds to
-        tripsList.getSelectionModel().selectedItemProperty().addListener((obs, oldTrip, trip) -> {
-            if (trip != null) Session.setCurrentItineraryId(trip.id());
-            showTrip(trip);
-        });
-
-        loadTrips();
-        loadFavorites();
+        travelers = Trips.travelers(Session.getUser().id());
+        travelersLabel.setText(travelers > 0 ? Trips.plural(travelers, "traveler") : "—");
+        loadTrip();
     }
 
-    private int userId() {
-        return Session.getUser().id();
-    }
-
-
-    // ---------------------------------------------------------------
-    //  Trips list
-    // ---------------------------------------------------------------
-
-    // Reloads the trips and re-selects the current one (or the newest)
-    private void loadTrips() {
+    // Finds the trip to show: the one picked on the dashboard, or the newest
+    private void loadTrip() {
         List<UserDAO.Itinerary> trips;
         try {
-            trips = UserDAO.getItineraries(userId());
+            trips = UserDAO.getItineraries(Session.getUser().id());   // newest first
         } catch (SQLException e) {
             e.printStackTrace();
-            showMessage("Couldn't load your trips.");
+            showNoTrip("Couldn't load your trip", "Please try again.");
             return;
         }
-        tripsList.getItems().setAll(trips);
-
         if (trips.isEmpty()) {
-            showTrip(null);
+            showNoTrip("No trips yet", "Create one from My dashboard with \"+ Create itinerary\".");
             return;
         }
-        Integer currentId = Session.getCurrentItineraryId();
-        UserDAO.Itinerary toSelect = trips.get(0);
+
+        Integer wanted = Session.getCurrentItineraryId();
+        trip = trips.get(0);
         for (UserDAO.Itinerary t : trips) {
-            if (currentId != null && t.id() == currentId) toSelect = t;
+            if (wanted != null && t.id() == wanted) trip = t;
         }
-        tripsList.getSelectionModel().select(toSelect);
-        showTrip(toSelect);   // also refreshes if the same trip was already selected
+        Session.setCurrentItineraryId(trip.id());   // "Save to my trip" now adds to this one
+        refresh();
+    }
+
+    private void showNoTrip(String title, String text) {
+        trip = null;
+        tripTitle.setText(title);
+        tripSubtitle.setText(text);
+        breadcrumbLabel.setText("");
+        for (Button b : List.of(addPlaceButton, renameButton, deleteTripButton)) b.setDisable(true);
+        dayTabs.getChildren().clear();
+        stopsBox.getChildren().clear();
+        dayTitle.setText("");
+        daySubtitle.setText("");
+        dayCountLabel.setText("");
+        mapSummaryTitle.setText("Nothing to map yet.");
+        map.show(List.of(), 0);
+    }
+
+
+    // ---------------------------------------------------------------
+    //  Whole trip
+    // ---------------------------------------------------------------
+
+    // Reloads the stops and redraws everything (keeps the selected day if it still exists)
+    private void refresh() {
+        try {
+            items = UserDAO.getItineraryItems(trip.id());   // sorted by day, then position
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Ui.toast(stopsBox, "Couldn't load this trip.", true);
+            items = List.of();
+        }
+
+        breadcrumbLabel.setText("/  " + trip.name().toUpperCase());
+        tripTitle.setText(trip.name());
+        List<String> subtitle = new ArrayList<>(List.of("Las Vegas, Nevada", Trips.dateRange(trip)));
+        if (travelers > 0) subtitle.add(Trips.plural(travelers, "traveler"));
+        tripSubtitle.setText(String.join("  ·  ", subtitle));
+
+        int dayCount = Trips.dayCount(trip, items);
+        selectedDay = Math.max(1, Math.min(selectedDay, dayCount));
+        buildDayTabs(dayCount);
+        showDay(selectedDay);
+    }
+
+    private void buildDayTabs(int dayCount) {
+        dayTabs.getChildren().clear();
+        ToggleGroup group = new ToggleGroup();
+        for (int day = 1; day <= dayCount; day++) {
+            Label name = new Label(Trips.dayTab(trip, day));
+            name.getStyleClass().add("itin-day-name");
+            Label count = new Label(Trips.plural(stopsOn(day).size(), "place"));
+            count.getStyleClass().add("itin-day-places");
+
+            ToggleButton tab = new ToggleButton();
+            tab.setGraphic(new VBox(2, name, count));
+            tab.getStyleClass().add("itin-day");
+            tab.setToggleGroup(group);
+            tab.setSelected(day == selectedDay);
+            int thisDay = day;
+            tab.setOnAction(e -> {
+                tab.setSelected(true);   // clicking the open day again keeps it open
+                showDay(thisDay);
+            });
+            dayTabs.getChildren().add(tab);
+        }
+    }
+
+    private List<UserDAO.ItineraryItem> stopsOn(int day) {
+        List<UserDAO.ItineraryItem> stops = new ArrayList<>();
+        for (UserDAO.ItineraryItem item : items) {
+            if (item.dayNumber() == day) stops.add(item);
+        }
+        return stops;
+    }
+
+
+    // ---------------------------------------------------------------
+    //  One day: stop cards + map
+    // ---------------------------------------------------------------
+
+    private void showDay(int day) {
+        selectedDay = day;
+        List<UserDAO.ItineraryItem> stops = stopsOn(day);
+
+        dayTitle.setText(Trips.dayTitle(trip, day));
+        LocalDate date = Trips.dateOf(trip, day);
+        daySubtitle.setText((date != null ? date.format(FULL_DATE) + "  ·  " : "")
+                + Trips.plural(stops.size(), "place")
+                + (stops.isEmpty() ? "" : "  ·  A little wonder, a lot of Vegas."));
+        dayCountLabel.setText("Day " + day + " of " + Trips.dayCount(trip, items));
+
+        stopsBox.getChildren().clear();
+        if (stops.isEmpty()) {
+            stopsBox.getChildren().add(emptyDayCard());
+        }
+        for (int i = 0; i < stops.size(); i++) {
+            stopsBox.getChildren().add(stopCard(stops.get(i), i + 1));
+        }
+
+        updateMap(stops);
+    }
+
+    private HBox stopCard(UserDAO.ItineraryItem stop, int number) {
+        Place place = placesById.get(stop.placeId());
+
+        ImageView photo = Ui.coverImage(Ui.placeImage(stop.placeId(), 260), PHOTO_WIDTH, STOP_HEIGHT);
+
+        // number · category · price
+        Label badge = new Label(String.valueOf(number));
+        badge.getStyleClass().add("aiv-number");
+        String categoryText = place == null ? "" : Ui.categoryLabel(place.category()).toUpperCase();
+        if (place != null && place.priceLevel() != null) categoryText += "  ·  " + place.priceLevel();
+        Label category = new Label(categoryText);
+        category.getStyleClass().add("itin-category");
+        HBox meta = new HBox(10, badge, category);
+        meta.setAlignment(Pos.CENTER_LEFT);
+
+        Label name = new Label(stop.placeName());
+        name.getStyleClass().add("itin-stop-name");
+        name.setWrapText(true);
+
+        String address = place == null ? "" : Ui.shortAddress(place.address());
+        Label addressLabel = new Label(address.isEmpty() ? "Address not listed" : address);
+        addressLabel.getStyleClass().add("itin-stop-text");
+
+        // move earlier / later, remove, view
+        int maxDays = Trips.maxDays(trip);
+        Button earlier = smallAction("◀ Day " + (stop.dayNumber() - 1));
+        earlier.setVisible(stop.dayNumber() > 1);
+        earlier.setManaged(stop.dayNumber() > 1);
+        earlier.setOnAction(e -> moveStop(stop, stop.dayNumber() - 1));
+        Button later = smallAction("Day " + (stop.dayNumber() + 1) + " ▶");
+        later.setVisible(stop.dayNumber() < maxDays);
+        later.setManaged(stop.dayNumber() < maxDays);
+        later.setOnAction(e -> moveStop(stop, stop.dayNumber() + 1));
+        Button remove = smallAction("Remove");
+        remove.setOnAction(e -> removeStop(stop));
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Button view = new Button("View place  →");
+        view.getStyleClass().add("itin-stop-link");
+        view.setOnAction(e -> {
+            BrowsePlacesController browse = Navigator.go(view, Navigator.BROWSE);
+            if (browse != null) browse.showPlace(stop.placeId());
+        });
+        HBox footer = new HBox(16, earlier, later, remove, spacer, view);
+        footer.setAlignment(Pos.CENTER_LEFT);
+
+        Region push = new Region();
+        VBox.setVgrow(push, Priority.ALWAYS);
+        VBox body = new VBox(meta, name, addressLabel, push, footer);
+        body.getStyleClass().add("itin-stop-body");
+        body.setMinWidth(0);
+        HBox.setHgrow(body, Priority.ALWAYS);
+
+        HBox card = new HBox(photo, body);
+        card.getStyleClass().addAll("aiv-card", "itin-stop");
+        card.setMinHeight(STOP_HEIGHT);
+        Ui.roundCorners(card, 8);
+        return card;
+    }
+
+    private VBox emptyDayCard() {
+        Label title = new Label("Nothing planned for this day yet.");
+        title.getStyleClass().add("aiv-card-title");
+        Label text = new Label("Add places from Browse places, or move a stop here from another day.");
+        text.getStyleClass().add("aiv-muted");
+        text.setWrapText(true);
+        Button add = new Button("+  Add a place");
+        add.getStyleClass().add("aiv-button");
+        add.setOnAction(e -> onAddPlaceClicked());
+        VBox card = new VBox(title, text, add);
+        card.getStyleClass().addAll("aiv-card", "itin-empty");
+        return card;
+    }
+
+    private static Button smallAction(String text) {
+        Button b = new Button(text);
+        b.getStyleClass().add("itin-small-action");
+        return b;
+    }
+
+    private void updateMap(List<UserDAO.ItineraryItem> stops) {
+        List<ItineraryMap.Stop> pins = new ArrayList<>();
+        int withoutLocation = 0;
+        for (int i = 0; i < stops.size(); i++) {
+            Place place = placesById.get(stops.get(i).placeId());
+            if (place == null || place.latitude() == null || place.longitude() == null) {
+                withoutLocation++;
+                continue;
+            }
+            pins.add(new ItineraryMap.Stop(i + 1, stops.get(i).placeName(), place.latitude(), place.longitude()));
+        }
+        map.show(pins, withoutLocation);
+
+        mapSubtitle.setText(stops.isEmpty()
+                ? "Add places to this day to see them on the map."
+                : "Follow your places in the order you'll visit them.");
+        mapSummaryTitle.setText(stops.isEmpty() ? "Nothing planned yet."
+                : stops.size() == 1 ? "1 place. One memorable day."
+                : Trips.plural(stops.size(), "place") + ". One memorable day.");
+        firstStopLabel.setText(stops.isEmpty() ? "—" : stops.get(0).placeName());
+        lastStopLabel.setText(stops.isEmpty() ? "—" : stops.get(stops.size() - 1).placeName());
+    }
+
+
+    // ---------------------------------------------------------------
+    //  Changing the trip
+    // ---------------------------------------------------------------
+
+    private void moveStop(UserDAO.ItineraryItem stop, int newDay) {
+        try {
+            UserDAO.moveItemToDay(stop.itemId(), newDay);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Ui.toast(stopsBox, "Couldn't move that stop.", true);
+        }
+        refresh();
+    }
+
+    private void removeStop(UserDAO.ItineraryItem stop) {
+        try {
+            UserDAO.removeItineraryItem(stop.itemId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Ui.toast(stopsBox, "Couldn't remove that stop.", true);
+        }
+        refresh();
     }
 
     @FXML
-    protected void onNewTripClicked() {
-        TextInputDialog dialog = new TextInputDialog("My Vegas Trip");
-        dialog.setTitle("New trip");
-        dialog.setHeaderText(null);
-        dialog.setContentText("Trip name:");
-        Optional<String> name = dialog.showAndWait();
-        if (name.isEmpty()) return;   // cancelled
-
+    protected void onRenameClicked() {
+        Optional<String> name = Ui.askText(renameButton, "Rename trip", "Trip name:", trip.name());
+        if (name.isEmpty() || name.get().isBlank()) return;
         try {
-            int id = UserDAO.createItinerary(userId(), name.get(), null, null);
-            Session.setCurrentItineraryId(id);
+            UserDAO.renameItinerary(trip.id(), name.get());
+            trip = new UserDAO.Itinerary(trip.id(), name.get(), trip.startDate(), trip.endDate());
         } catch (SQLException e) {
             e.printStackTrace();
-            showMessage("Couldn't create the trip.");
+            Ui.toast(renameButton, "Couldn't rename the trip.", true);
         }
-        loadTrips();
+        refresh();
     }
 
     @FXML
     protected void onDeleteTripClicked() {
-        UserDAO.Itinerary trip = tripsList.getSelectionModel().getSelectedItem();
-        if (trip == null) return;
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Delete \"" + trip.name() + "\" and everything planned in it?", ButtonType.OK, ButtonType.CANCEL);
-        confirm.setHeaderText(null);
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
-
+        if (!Ui.confirm(deleteTripButton, "Delete \"" + trip.name() + "\" and everything planned in it?", "Delete trip")) {
+            return;
+        }
         try {
             UserDAO.deleteItinerary(trip.id());   // its stops are deleted automatically
             Session.setCurrentItineraryId(null);
         } catch (SQLException e) {
             e.printStackTrace();
-            showMessage("Couldn't delete the trip.");
-        }
-        loadTrips();
-    }
-
-
-    // ---------------------------------------------------------------
-    //  Selected trip, day by day
-    // ---------------------------------------------------------------
-
-    private void showTrip(UserDAO.Itinerary trip) {
-        daysBox.getChildren().clear();
-        deleteTripButton.setDisable(trip == null);
-        addFavoriteButton.setDisable(trip == null);
-
-        if (trip == null) {
-            tripTitle.setText("No trip selected");
-            tripDates.setText("Start one with \"New trip\", or use Plan a Trip → Find my Vegas.");
+            Ui.toast(deleteTripButton, "Couldn't delete the trip.", true);
             return;
         }
-        tripTitle.setText(trip.name());
-        tripDates.setText(dateRange(trip));
-
-        List<UserDAO.ItineraryItem> items;
-        try {
-            items = UserDAO.getItineraryItems(trip.id());   // already sorted by day, then position
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showMessage("Couldn't load this trip.");
-            return;
-        }
-
-        int dayCount = dayCount(trip, items);
-        for (int day = 1; day <= dayCount; day++) {
-            Label header = new Label(dayHeader(trip, day));
-            header.getStyleClass().add("section-title");
-            daysBox.getChildren().add(header);
-
-            List<UserDAO.ItineraryItem> stops = new ArrayList<>();
-            for (UserDAO.ItineraryItem item : items) {
-                if (item.dayNumber() == day) stops.add(item);
-            }
-
-            if (stops.isEmpty()) {
-                Label empty = new Label("Nothing planned yet. Add places from Browse places or your favorites.");
-                empty.getStyleClass().add("section-hint");
-                daysBox.getChildren().add(empty);
-            }
-            for (UserDAO.ItineraryItem stop : stops) {
-                daysBox.getChildren().add(stopRow(trip, stop, dayCount));
-            }
-        }
+        Navigator.go(deleteTripButton, Navigator.DASHBOARD);
     }
 
-    // One stop: name, buttons to move it a day earlier/later, and Remove
-    private HBox stopRow(UserDAO.Itinerary trip, UserDAO.ItineraryItem stop, int dayCount) {
-        Label name = new Label(stop.placeName());
-        name.getStyleClass().add("place-name");
-        name.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(name, Priority.ALWAYS);
-
-        Button earlier = smallButton("◀ Day " + (stop.dayNumber() - 1));
-        earlier.setDisable(stop.dayNumber() <= 1);
-        earlier.setOnAction(e -> moveStop(trip, stop, stop.dayNumber() - 1));
-
-        Button later = smallButton("Day " + (stop.dayNumber() + 1) + " ▶");
-        later.setDisable(stop.dayNumber() >= maxDays(trip));
-        later.setOnAction(e -> moveStop(trip, stop, stop.dayNumber() + 1));
-
-        Button remove = smallButton("Remove");
-        remove.setOnAction(e -> {
-            try {
-                UserDAO.removeItineraryItem(stop.itemId());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                showMessage("Couldn't remove that stop.");
-            }
-            showTrip(trip);
-        });
-
-        if (stop.dayNumber() <= 1) earlier.setText("◀");
-
-        HBox row = new HBox(10, name, earlier, later, remove);
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.getStyleClass().add("place-card");
-        return row;
-    }
-
-    private void moveStop(UserDAO.Itinerary trip, UserDAO.ItineraryItem stop, int newDay) {
-        try {
-            UserDAO.moveItemToDay(stop.itemId(), newDay);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showMessage("Couldn't move that stop.");
-        }
-        showTrip(trip);
-    }
-
-    private static Button smallButton(String text) {
-        Button b = new Button(text);
-        b.getStyleClass().add("secondary-button");
-        b.setStyle(SMALL_BUTTON);
-        return b;
-    }
-
-    // Trips with dates show every day of the trip; trips without dates show up to the last used day
-    private static int dayCount(UserDAO.Itinerary trip, List<UserDAO.ItineraryItem> items) {
-        if (trip.startDate() != null && trip.endDate() != null) {
-            return maxDays(trip);
-        }
-        int lastUsed = 1;
-        for (UserDAO.ItineraryItem item : items) lastUsed = Math.max(lastUsed, item.dayNumber());
-        return lastUsed;
-    }
-
-    private static int maxDays(UserDAO.Itinerary trip) {
-        if (trip.startDate() != null && trip.endDate() != null) {
-            return Math.max(1, (int) ChronoUnit.DAYS.between(trip.startDate(), trip.endDate()) + 1);
-        }
-        return MAX_DAYS_WITHOUT_DATES;
-    }
-
-    // "Day 2 · Sat, Dec 5" when the trip has a start date, otherwise just "Day 2"
-    private static String dayHeader(UserDAO.Itinerary trip, int day) {
-        if (trip.startDate() == null) return "Day " + day;
-        LocalDate date = trip.startDate().plusDays(day - 1);
-        return "Day " + day + " · " + date.format(DAY_FORMAT);
-    }
-
-    private static String dateRange(UserDAO.Itinerary trip) {
-        if (trip.startDate() == null) return "No dates yet";
-        if (trip.endDate() == null) return "From " + trip.startDate().format(RANGE_FORMAT);
-        return trip.startDate().format(RANGE_FORMAT) + " – " + trip.endDate().format(RANGE_FORMAT);
-    }
-
-
-    // ---------------------------------------------------------------
-    //  Favorites
-    // ---------------------------------------------------------------
-
-    private void loadFavorites() {
-        try {
-            favoritesList.getItems().setAll(UserDAO.getFavorites(userId()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showMessage("Couldn't load your favorites.");
-        }
+    // Browse places, with "Save to my trip" adding to this trip
+    @FXML
+    protected void onAddPlaceClicked() {
+        if (trip != null) Session.setCurrentItineraryId(trip.id());
+        Navigator.go(addPlaceButton, Navigator.BROWSE);
     }
 
     @FXML
-    protected void onAddFavoriteToTripClicked() {
-        UserDAO.FavoritePlace fav = favoritesList.getSelectionModel().getSelectedItem();
-        UserDAO.Itinerary trip = tripsList.getSelectionModel().getSelectedItem();
-        if (fav == null) {
-            showMessage("Pick a favorite first.");
-            return;
-        }
-        if (trip == null) {
-            showMessage("Pick or create a trip first.");
-            return;
-        }
-
-        try {
-            if (UserDAO.getPlaceIdsInItinerary(trip.id()).contains(fav.placeId())) {
-                showMessage(fav.placeName() + " is already in this trip.");
-                return;
-            }
-            UserDAO.addPlaceToItinerary(trip.id(), fav.placeId(), 1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showMessage("Couldn't add that place.");
-        }
-        showTrip(trip);
-    }
-
-    @FXML
-    protected void onRemoveFavoriteClicked() {
-        UserDAO.FavoritePlace fav = favoritesList.getSelectionModel().getSelectedItem();
-        if (fav == null) return;
-        try {
-            UserDAO.removeFavorite(userId(), fav.placeId());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showMessage("Couldn't remove that favorite.");
-        }
-        loadFavorites();
-    }
-
-
-    // ---------------------------------------------------------------
-    //  Navigation and helpers
-    // ---------------------------------------------------------------
-
-    @FXML
-    protected void onReturnButtonClicked(ActionEvent event) {
-        showPage(event, "browse-places.fxml");
-    }
-
-    private void showPage(ActionEvent event, String fxmlName) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
-            Parent root = loader.load();
-
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            window.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
-            window.setFullScreenExitHint("");
-            window.setFullScreen(true);
-            window.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-        alert.setHeaderText(null);
-        alert.showAndWait();
-    }
-
-    private static String capitalize(String s) {
-        if (s == null || s.isEmpty()) return "";
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    protected void onBackToDashboardClicked() {
+        Navigator.go(dashboardCrumb, Navigator.DASHBOARD);
     }
 }

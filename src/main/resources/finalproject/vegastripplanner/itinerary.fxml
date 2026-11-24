@@ -1,108 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- Itinerary page: your trips (left), the selected trip day by day (middle), your favorites (right).
-     The day-by-day rows are built in ItineraryController, so the middle column is just an empty VBox here. -->
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="browse-root" stylesheets="@browse.css" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.ItineraryController">
+<!-- Itinerary: one trip, day by day, with a map of the selected day.
+     Opened from a trip card on My dashboard (Session.getCurrentItineraryId() says which trip).
+     Day tabs, stop cards and the map are built in ItineraryController. -->
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="aiv-page" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.ItineraryController">
+   <stylesheets>
+      <URL value="@theme.css" />
+      <URL value="@Itinerary.css" />
+   </stylesheets>
 
-   <!-- HEADER: brand + navigation -->
+   <!-- HEADER: shared navigation bar -->
    <top>
       <VBox>
          <padding>
             <Insets left="48.0" right="48.0" top="30.0" />
          </padding>
          <children>
-            <HBox alignment="CENTER_LEFT" styleClass="page-header">
-               <children>
-                  <VBox spacing="6.0">
-                     <children>
-                        <Label styleClass="brand-name-dark" text="ALL IN VEGAS" />
-                        <Label styleClass="brand-tagline-dark" text="YOUR TRIP. YOUR VEGAS." />
-                     </children>
-                  </VBox>
-                  <Region HBox.hgrow="ALWAYS" />
-                  <HBox alignment="CENTER_RIGHT" spacing="12.0">
-                     <children>
-                        <Button mnemonicParsing="false" styleClass="nav-button-active" text="Your Itinerary" />
-                        <Button fx:id="back" mnemonicParsing="false" onAction="#onReturnButtonClicked" styleClass="nav-button" text="Browse places" />
-                     </children>
-                  </HBox>
-               </children>
-            </HBox>
+            <fx:include fx:id="navBar" source="nav-bar.fxml" />
          </children>
       </VBox>
    </top>
 
-   <!-- MAIN CONTENT -->
    <center>
-      <HBox spacing="22.0">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+         <content>
+            <VBox>
+               <padding>
+                  <Insets bottom="24.0" left="48.0" right="48.0" />
+               </padding>
+               <children>
+
+                  <!-- heading -->
+                  <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="aiv-page-heading">
+                     <children>
+                        <VBox spacing="6.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                 <children>
+                                    <Button fx:id="dashboardCrumb" mnemonicParsing="false" onAction="#onBackToDashboardClicked" styleClass="itin-crumb" text="MY DASHBOARD" />
+                                    <Label fx:id="breadcrumbLabel" styleClass="aiv-eyebrow" text="/  YOUR TRIP" />
+                                 </children>
+                              </HBox>
+                              <Label fx:id="tripTitle" styleClass="aiv-title" text="Your itinerary" wrapText="true" />
+                              <Label fx:id="tripSubtitle" styleClass="aiv-subtitle" text="" />
+                           </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="addPlaceButton" minWidth="184.0" mnemonicParsing="false" onAction="#onAddPlaceClicked" styleClass="aiv-button-primary" text="+  Add a place" />
+                     </children>
+                  </HBox>
+
+                  <HBox alignment="TOP_LEFT" spacing="24.0">
+                     <children>
+
+                        <!-- LEFT: the schedule -->
+                        <VBox maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="0.0" spacing="16.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="18.0">
+                                 <children>
+                                    <Label styleClass="aiv-section-title" text="Your itinerary" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="renameButton" mnemonicParsing="false" onAction="#onRenameClicked" styleClass="aiv-link" text="Rename trip" />
+                                    <Button fx:id="deleteTripButton" mnemonicParsing="false" onAction="#onDeleteTripClicked" styleClass="aiv-link-peach" text="Delete trip" />
+                                 </children>
+                              </HBox>
+
+                              <!-- one button per day, added in code -->
+                              <FlowPane fx:id="dayTabs" hgap="12.0" vgap="12.0" />
+
+                              <HBox alignment="CENTER_LEFT" spacing="16.0">
+                                 <children>
+                                    <VBox spacing="3.0">
+                                       <children>
+                                          <Label fx:id="dayTitle" styleClass="itin-day-title" text="" />
+                                          <Label fx:id="daySubtitle" styleClass="aiv-small" text="" />
+                                       </children>
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="dayCountLabel" styleClass="itin-day-count" text="" />
+                                 </children>
+                              </HBox>
+
+                              <!-- one card per stop, added in code -->
+                              <VBox fx:id="stopsBox" spacing="14.0" />
+
+                              <Label styleClass="itin-reminder" maxWidth="1.7976931348623157E308" text="Your plan, not a reservation. Check opening hours and book tickets ahead." wrapText="true" />
+                           </children>
+                        </VBox>
+
+                        <!-- RIGHT: the map -->
+                        <VBox maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="0.0" styleClass="aiv-card" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox spacing="4.0" styleClass="itin-map-heading">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label styleClass="itin-map-title" text="Your day, mapped" />
+                                          <Region HBox.hgrow="ALWAYS" />
+                                          <Label styleClass="itin-map-tag" text="THE STRIP" />
+                                       </children>
+                                    </HBox>
+                                    <Label fx:id="mapSubtitle" styleClass="aiv-small" text="Follow your places in the order you'll visit them." />
+                                 </children>
+                              </VBox>
+
+                              <!-- ItineraryMap is put in here by the controller -->
+                              <StackPane fx:id="mapHolder" minHeight="0.0" />
+
+                              <VBox spacing="16.0" styleClass="itin-map-summary">
+                                 <children>
+                                    <Label fx:id="mapSummaryTitle" styleClass="itin-day-title" text="" />
+                                    <Label styleClass="aiv-small" text="The route shows your place order, not turn-by-turn directions." wrapText="true" />
+                                    <HBox spacing="24.0">
+                                       <children>
+                                          <VBox maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label styleClass="itin-overview-label" text="FIRST STOP" />
+                                                <Label fx:id="firstStopLabel" styleClass="itin-overview-value" text="—" />
+                                             </children>
+                                          </VBox>
+                                          <VBox maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label styleClass="itin-overview-label" text="LAST STOP" />
+                                                <Label fx:id="lastStopLabel" styleClass="itin-overview-value" text="—" />
+                                             </children>
+                                          </VBox>
+                                          <VBox maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="4.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label styleClass="itin-overview-label" text="TRAVELERS" />
+                                                <Label fx:id="travelersLabel" styleClass="itin-overview-value" text="—" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+
+   <!-- FOOTER -->
+   <bottom>
+      <HBox alignment="CENTER_LEFT">
          <padding>
-            <Insets bottom="30.0" left="48.0" right="48.0" top="24.0" />
+            <Insets bottom="20.0" left="48.0" right="48.0" top="12.0" />
          </padding>
          <children>
-
-            <!-- trips -->
-            <VBox minWidth="280.0" prefWidth="300.0" spacing="12.0" styleClass="detail-panel">
-               <padding>
-                  <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
-               </padding>
-               <children>
-                  <Label styleClass="section-title" text="My trips" />
-                  <Label styleClass="section-hint" text="Pick a trip to see its plan." />
-                  <ListView fx:id="tripsList" VBox.vgrow="ALWAYS" />
-                  <HBox spacing="10.0">
-                     <children>
-                        <Button fx:id="newTripButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onNewTripClicked" prefWidth="0.0" styleClass="primary-button" text="New trip" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="deleteTripButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDeleteTripClicked" prefWidth="0.0" styleClass="secondary-button" text="Delete trip" HBox.hgrow="ALWAYS" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-
-            <!-- selected trip, day by day -->
-            <VBox spacing="10.0" styleClass="detail-panel" HBox.hgrow="ALWAYS">
-               <padding>
-                  <Insets bottom="18.0" left="22.0" right="22.0" top="18.0" />
-               </padding>
-               <children>
-                  <Label fx:id="tripTitle" styleClass="detail-title" text="Your itinerary" wrapText="true" />
-                  <Label fx:id="tripDates" styleClass="section-hint" text="" />
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="detail-scroll" VBox.vgrow="ALWAYS">
-                     <content>
-                        <VBox fx:id="daysBox" spacing="10.0" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </VBox>
-
-            <!-- favorites -->
-            <VBox minWidth="300.0" prefWidth="320.0" spacing="12.0" styleClass="detail-panel">
-               <padding>
-                  <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
-               </padding>
-               <children>
-                  <Label styleClass="section-title" text="Favorites" />
-                  <Label styleClass="section-hint" text="Add a favorite to the selected trip (day 1)." wrapText="true" />
-                  <ListView fx:id="favoritesList" VBox.vgrow="ALWAYS" />
-                  <HBox spacing="10.0">
-                     <children>
-                        <Button fx:id="addFavoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAddFavoriteToTripClicked" prefWidth="0.0" styleClass="primary-button" text="Add to trip" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="removeFavoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onRemoveFavoriteClicked" prefWidth="0.0" styleClass="secondary-button" text="Remove" HBox.hgrow="ALWAYS" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-
+            <Label styleClass="aiv-footer-text" text="A little planning. A lot of Vegas." />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label styleClass="aiv-footer-text" text="© 2026 All In Vegas" />
          </children>
       </HBox>
-   </center>
+   </bottom>
 </BorderPane>
