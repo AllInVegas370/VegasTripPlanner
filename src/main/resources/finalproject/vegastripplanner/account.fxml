@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="login-root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.AccountController">
+<!-- Create account -->
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="aiv-page" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.AccountController">
+   <stylesheets>
+      <URL value="@theme.css" />
+      <URL value="@login.css" />
+   </stylesheets>
    <center>
       <GridPane>
          <columnConstraints>
@@ -16,82 +32,39 @@
          </rowConstraints>
          <children>
 
-            <!-- LEFT: Vegas photo panel -->
-            <StackPane styleClass="hero" GridPane.columnIndex="0">
-               <children>
-                  <Region styleClass="hero-overlay" />
-                  <VBox spacing="0.0">
-                     <padding>
-                        <Insets bottom="57.0" left="48.0" right="48.0" top="45.0" />
-                     </padding>
-                     <children>
-                        <HBox alignment="TOP_LEFT">
-                           <children>
-                              <VBox spacing="6.0">
-                                 <children>
-                                    <Label styleClass="brand-name" text="ALL IN VEGAS" />
-                                    <Label styleClass="brand-tagline" text="YOUR TRIP. YOUR VEGAS." />
-                                 </children>
-                              </VBox>
-                              <Region HBox.hgrow="ALWAYS" />
-                              <Label styleClass="destination-badge" text="LAS VEGAS, NEVADA" />
-                           </children>
-                        </HBox>
-                        <Region VBox.vgrow="ALWAYS" />
-                        <Label styleClass="hero-eyebrow" text="LESS PLANNING. MORE LIVING." />
-                        <Label styleClass="hero-title" text="Go all in.&#10;Make it your Vegas.">
-                           <VBox.margin>
-                              <Insets top="20.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label styleClass="hero-description" text="The tables. The tastes. The unforgettable nights.&#10;Bring it all together in one extraordinary trip.">
-                           <VBox.margin>
-                              <Insets top="28.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0" styleClass="hero-rule">
-                           <VBox.margin>
-                              <Insets top="48.0" />
-                           </VBox.margin>
-                        </Region>
-                        <Label styleClass="hero-footer-text" text="STAYS  /  DINING  /  SHOWS  /  NIGHTLIFE">
-                           <VBox.margin>
-                              <Insets top="24.0" />
-                           </VBox.margin>
-                        </Label>
-                     </children>
-                  </VBox>
-               </children>
-            </StackPane>
+            <!-- LEFT: Vegas photo panel (shared with the Welcome page) -->
+            <fx:include source="auth-hero.fxml" GridPane.columnIndex="0" />
 
             <!-- RIGHT: create-account panel -->
-            <VBox alignment="TOP_CENTER" styleClass="auth-panel" GridPane.columnIndex="1">
+            <VBox alignment="TOP_CENTER" GridPane.columnIndex="1">
                <padding>
-                  <Insets bottom="40.0" left="40.0" right="40.0" top="48.0" />
+                  <Insets bottom="44.0" left="56.0" right="56.0" top="56.0" />
                </padding>
                <children>
 
-                  <!-- header row -->
+                  <!-- top line -->
                   <HBox alignment="CENTER_LEFT" maxWidth="456.0">
                      <children>
-                        <Label styleClass="auth-note" text="A LITTLE PLANNING. A LOT OF VEGAS." />
+                        <Label styleClass="auth-topline" text="A LITTLE PLANNING. A LOT OF VEGAS." />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="backButton" mnemonicParsing="false" onAction="#onSignInLinkClicked" styleClass="auth-topline-link" text="← Back to sign in" />
                      </children>
                   </HBox>
 
                   <Region VBox.vgrow="ALWAYS" />
 
                   <!-- form -->
-                  <VBox maxWidth="456.0" spacing="20.0">
+                  <VBox maxWidth="456.0" spacing="20.0" styleClass="auth-form">
                      <children>
-                        <VBox spacing="12.0">
+                        <VBox spacing="10.0">
                            <children>
-                              <Label styleClass="form-eyebrow" text="YOUR VEGAS STARTS HERE" />
-                              <Label styleClass="form-title" text="Create an account." />
-                              <Label styleClass="form-description" text="Your next great Vegas story starts with you." />
+                              <Label styleClass="aiv-eyebrow" text="YOUR VEGAS STARTS HERE" />
+                              <Label styleClass="auth-form-title" text="Create an account." />
+                              <Label styleClass="aiv-subtitle" text="Your next great Vegas story starts with you." />
                            </children>
                         </VBox>
 
-                        <VBox spacing="14.0">
+                        <VBox spacing="16.0">
                            <children>
 
                               <!-- first / last name -->
@@ -99,31 +72,23 @@
                                  <children>
                                     <VBox prefWidth="0.0" spacing="8.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label styleClass="field-label" text="First name" />
+                                          <Label styleClass="aiv-field-label" text="First name" />
                                           <TextField fx:id="firstNameField" promptText="First name" />
                                        </children>
                                     </VBox>
                                     <VBox prefWidth="0.0" spacing="8.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label styleClass="field-label" text="Last name" />
+                                          <Label styleClass="aiv-field-label" text="Last name" />
                                           <TextField fx:id="lastNameField" promptText="Last name" />
                                        </children>
                                     </VBox>
                                  </children>
                               </HBox>
 
-                              <!-- birthday (kept from your old page; delete this block if you don't need it) -->
-                              <VBox spacing="8.0">
-                                 <children>
-                                    <Label styleClass="field-label" text="Birthday" />
-                                    <DatePicker fx:id="birthdayPicker" maxWidth="1.7976931348623157E308" promptText="Choose your birthday" />
-                                 </children>
-                              </VBox>
-
                               <!-- username -->
                               <VBox spacing="8.0">
                                  <children>
-                                    <Label styleClass="field-label" text="Username" />
+                                    <Label styleClass="aiv-field-label" text="Username" />
                                     <TextField fx:id="usernameField" promptText="Choose a username" />
                                  </children>
                               </VBox>
@@ -133,14 +98,24 @@
                                  <children>
                                     <VBox prefWidth="0.0" spacing="8.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label styleClass="field-label" text="Password" />
-                                          <PasswordField fx:id="passwordField" promptText="Create password" />
+                                          <Label styleClass="aiv-field-label" text="Password" />
+                                          <StackPane styleClass="aiv-password">
+                                             <children>
+                                                <PasswordField fx:id="passwordField" promptText="Create password" />
+                                                <Button fx:id="showPasswordButton" mnemonicParsing="false" styleClass="aiv-show-button" text="Show" StackPane.alignment="CENTER_RIGHT" />
+                                             </children>
+                                          </StackPane>
                                        </children>
                                     </VBox>
                                     <VBox prefWidth="0.0" spacing="8.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label styleClass="field-label" text="Confirm password" />
-                                          <PasswordField fx:id="confirmPasswordField" promptText="Repeat password" />
+                                          <Label styleClass="aiv-field-label" text="Confirm password" />
+                                          <StackPane styleClass="aiv-password">
+                                             <children>
+                                                <PasswordField fx:id="confirmPasswordField" promptText="Repeat password" />
+                                                <Button fx:id="showConfirmButton" mnemonicParsing="false" styleClass="aiv-show-button" text="Show" StackPane.alignment="CENTER_RIGHT" />
+                                             </children>
+                                          </StackPane>
                                        </children>
                                     </VBox>
                                  </children>
@@ -149,30 +124,34 @@
                               <!-- email / phone -->
                               <VBox spacing="8.0">
                                  <children>
-                                    <Label styleClass="field-label" text="Email / phone number" />
-                                    <TextField fx:id="contactField" promptText="Enter your email or phone number" />
+                                    <Label styleClass="aiv-field-label" text="Email / phone number" />
+                                    <TextField fx:id="contactField" onAction="#onCreateAccountButtonClicked" promptText="Enter your email or phone number" />
                                  </children>
                               </VBox>
                            </children>
                         </VBox>
 
-                        <Button fx:id="createAccountButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateAccountButtonClicked" styleClass="primary-button" text="Create an account" />
+                        <!-- filled in by AccountController when something is wrong -->
+                        <Label fx:id="errorLabel" managed="false" styleClass="aiv-error-text" visible="false" wrapText="true" />
 
-                        <HBox alignment="CENTER" spacing="5.0">
+                        <Button fx:id="createAccountButton" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateAccountButtonClicked" styleClass="aiv-button-primary, auth-submit" text="Create an account" />
+
+                        <HBox alignment="CENTER" spacing="6.0">
                            <children>
-                              <Label styleClass="divider-text" text="Already have an account?" />
-                              <Button fx:id="signInLinkButton" mnemonicParsing="false" onAction="#onSignInLinkClicked" styleClass="accent-link" text="Sign in" />                           </children>
+                              <Label styleClass="auth-note" text="Already have an account?" />
+                              <Button fx:id="signInLinkButton" mnemonicParsing="false" onAction="#onSignInLinkClicked" styleClass="auth-option-link" text="Sign in" />
+                           </children>
                         </HBox>
                      </children>
                   </VBox>
 
                   <Region VBox.vgrow="ALWAYS" />
 
-                  <!-- footer -->
-                  <VBox alignment="CENTER" maxWidth="456.0" spacing="14.0">
+                  <!-- legal -->
+                  <VBox alignment="CENTER" maxWidth="456.0" spacing="10.0">
                      <children>
-                        <Label styleClass="footer-text" text="By continuing, you agree to our Terms of Service and Privacy Policy." />
-                        <Label styleClass="footer-text" text="© 2026 All In Vegas. Make every moment count." />
+                        <Label styleClass="auth-legal" text="By continuing, you agree to our Terms of Service and Privacy Policy." />
+                        <Label styleClass="auth-legal" text="© 2026 All In Vegas. Make every moment count." />
                      </children>
                   </VBox>
                </children>

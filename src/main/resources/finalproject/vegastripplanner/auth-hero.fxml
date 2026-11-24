@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- The Vegas photo panel on the left of the Welcome and Create account pages.
+     Both pages pull it in with <fx:include source="auth-hero.fxml" />.
+     The photo itself is set in login.css (.auth-hero). -->
+<StackPane minWidth="0.0" styleClass="auth-hero" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Region styleClass="auth-hero-overlay" />
+        <BorderPane>
+            <padding>
+                <Insets bottom="42.0" left="48.0" right="48.0" top="45.0" />
+            </padding>
+            <top>
+                <HBox alignment="TOP_LEFT">
+                    <children>
+                        <VBox spacing="5.0">
+                            <children>
+                                <Label minWidth="-Infinity" styleClass="aiv-brand" text="ALL IN VEGAS" />
+                                <Label minWidth="-Infinity" styleClass="aiv-brand-tagline" text="YOUR TRIP. YOUR VEGAS." />
+                            </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label minWidth="-Infinity" styleClass="auth-destination" text="LAS VEGAS, NEVADA" />
+                    </children>
+                </HBox>
+            </top>
+            <bottom>
+                <VBox>
+                    <children>
+                        <Label styleClass="aiv-eyebrow" text="LESS PLANNING. MORE LIVING." />
+                        <Label styleClass="auth-story-title" text="Go all in.&#10;Make it your Vegas." wrapText="true">
+                            <VBox.margin>
+                                <Insets bottom="28.0" top="14.0" />
+                            </VBox.margin>
+                        </Label>
+                        <Label maxWidth="440.0" styleClass="auth-story-text" text="The tables. The tastes. The unforgettable nights. Bring it all together in one extraordinary trip." wrapText="true" />
+                        <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0" styleClass="auth-hero-rule">
+                            <VBox.margin>
+                                <Insets bottom="20.0" top="64.0" />
+                            </VBox.margin>
+                        </Region>
+                        <HBox>
+                            <children>
+                                <Label styleClass="auth-hero-footer" text="STAYS  /  DINING  /  SHOWS  /  NIGHTLIFE" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label styleClass="auth-hero-footer" text="36.1699° N  115.1398° W" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </bottom>
+        </BorderPane>
+    </children>
+</StackPane>

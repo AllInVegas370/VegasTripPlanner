@@ -3,6 +3,7 @@ module finalproject.vegastripplanner {
     requires javafx.fxml;
     requires java.desktop;
     requires java.sql;
+    requires java.prefs;   // "Remember me" on the sign-in page
 
 
     requires com.fasterxml.jackson.databind;

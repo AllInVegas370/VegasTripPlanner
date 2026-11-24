@@ -1,128 +1,68 @@
-.login-root {
-    -cream: #faf8f2;
-    -ink: #142921;
-    -muted: #636e66;
-    -green: #1f4738;
-    -border: #d1d6c9;
-    -input-bg: #fffffc;
-    -hero-text: #fffdf5;
-    -hero-muted: #dee6d4;
+/* =====================================================================
+   Welcome (main-page.fxml) + Create account (account.fxml)
+   Loaded after theme.css, so the -aiv-... colours come from there.
+   ===================================================================== */
 
-    -fx-background-color: -cream;
-    -fx-font-family: "Segoe UI";
-}
-
-/* ---------- Left photo panel ---------- */
-.hero {
-    /* adjust this path to wherever your Vegas photo lives, relative to this css file */
+/* ---------- Left photo panel (auth-hero.fxml) ---------- */
+.auth-hero {
+    /* Swap in your exported Vegas photo here (path is relative to this css file) */
     -fx-background-image: url("Images/vegas-landscape.jpg");
     -fx-background-size: cover;
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
 }
-.hero-overlay {
+.auth-hero-overlay {
     -fx-background-color: linear-gradient(to bottom,
-    rgba(4, 18, 17, 0.42) 0%,
-    rgba(4, 18, 17, 0.02) 42%,
-    rgba(4, 18, 17, 0.94) 100%);
+    rgba(27, 16, 40, 0.42) 0%,
+    rgba(27, 16, 40, 0.02) 42%,
+    rgba(27, 16, 40, 0.94) 100%);
 }
-.brand-name { -fx-text-fill: -hero-text; -fx-font-size: 24px; -fx-font-weight: bold; }
-.brand-tagline { -fx-text-fill: -hero-muted; -fx-font-size: 9px; -fx-font-weight: bold; }
-.destination-badge {
-    -fx-text-fill: -hero-text;
+.auth-destination {
+    -fx-text-fill: -aiv-text;
     -fx-font-size: 10px;
-    -fx-padding: 8 22 8 22;
+    -fx-alignment: center;
+    -fx-pref-width: 192px;
+    -fx-pref-height: 32px;
     -fx-background-color: rgba(255, 255, 255, 0.10);
     -fx-background-radius: 16;
     -fx-border-color: rgba(255, 255, 255, 0.30);
     -fx-border-radius: 16;
 }
-.hero-eyebrow { -fx-text-fill: -hero-muted; -fx-font-size: 11px; -fx-font-weight: bold; }
-.hero-title { -fx-text-fill: -hero-text; -fx-font-size: 52px; -fx-font-weight: bold; -fx-line-spacing: 2px; }
-.hero-description { -fx-text-fill: -hero-muted; -fx-font-size: 16px; -fx-line-spacing: 4px; }
-.hero-rule { -fx-background-color: rgba(255, 253, 245, 0.23); }
-.hero-footer-text { -fx-text-fill: -hero-muted; -fx-font-size: 10px; -fx-font-weight: bold; }
+.auth-story-title { -fx-text-fill: -aiv-text; -fx-font-size: 54px; -fx-line-spacing: -4px; }
+.auth-story-text { -fx-text-fill: #e8d5e9; -fx-font-size: 16px; -fx-line-spacing: 6px; }
+.auth-hero-rule { -fx-background-color: rgba(255, 243, 247, 0.23); }
+.auth-hero-footer { -fx-text-fill: #e8d5e9; -fx-font-size: 10px; }
 
-/* ---------- Right sign-in panel ---------- */
-.auth-panel { -fx-background-color: -cream; }
-.auth-note { -fx-text-fill: -muted; -fx-font-size: 10px; -fx-font-weight: bold; }
-
-.link-button {
+/* ---------- Right form panel ---------- */
+.auth-topline { -fx-text-fill: -aiv-muted; -fx-font-size: 10px; }
+.auth-topline-link {
     -fx-background-color: transparent;
-    -fx-text-fill: -muted;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-    -fx-padding: 4 0 4 0;
-}
-.link-button:hover { -fx-underline: true; }
-
-.form-eyebrow { -fx-text-fill: -green; -fx-font-size: 10px; -fx-font-weight: bold; }
-.form-title { -fx-text-fill: -ink; -fx-font-size: 42px; -fx-font-weight: bold; }
-.form-description { -fx-text-fill: -muted; -fx-font-size: 14px; }
-.field-label { -fx-text-fill: -ink; -fx-font-size: 12px; -fx-font-weight: bold; }
-
-.login-root .text-field,
-.login-root .password-field {
-    -fx-background-color: -input-bg;
-    -fx-background-radius: 7;
-    -fx-border-color: -border;
-    -fx-border-radius: 7;
-    -fx-pref-height: 54px;
-    -fx-padding: 0 16 0 16;
-    -fx-font-size: 14px;
-    -fx-text-fill: -ink;
-    -fx-prompt-text-fill: -muted;
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-.login-root .text-field:focused,
-.login-root .password-field:focused {
-    -fx-border-color: -green;
-}
-
-/* checkbox */
-.login-root .check-box { -fx-text-fill: -muted; -fx-font-size: 12px; }
-.login-root .check-box .box {
-    -fx-background-color: -input-bg;
-    -fx-background-radius: 3;
-    -fx-border-color: -border;
-    -fx-border-radius: 3;
-}
-.login-root .check-box:selected .box { -fx-background-color: -green; -fx-border-color: -green; }
-.login-root .check-box:selected .mark { -fx-background-color: white; }
-
-.forgot-password { -fx-text-fill: -green; -fx-font-size: 12px; -fx-font-weight: bold; }
-
-/* buttons */
-.primary-button {
-    -fx-background-color: -green;
-    -fx-background-radius: 7;
-    -fx-text-fill: -input-bg;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-pref-height: 54px;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-muted;
+    -fx-font-size: 10px;
+    -fx-padding: 2 0 2 0;
     -fx-cursor: hand;
 }
-.primary-button:hover { -fx-background-color: #17392c; }
+.auth-topline-link:hover { -fx-text-fill: -aiv-lavender; -fx-underline: true; }
 
-.secondary-button {
+.auth-form-title { -fx-text-fill: -aiv-text; -fx-font-size: 42px; }
+.auth-form .text-field,
+.auth-form .password-field { -fx-pref-height: 52px; }
+
+.auth-option-link {
     -fx-background-color: transparent;
-    -fx-background-radius: 7;
-    -fx-border-color: -border;
-    -fx-border-radius: 7;
-    -fx-text-fill: -ink;
-    -fx-font-size: 14px;
+    -fx-background-insets: 0;
+    -fx-text-fill: -aiv-lavender;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-pref-height: 54px;
+    -fx-padding: 0;
     -fx-cursor: hand;
 }
-.secondary-button:hover {
-    -fx-border-color: -green;
-    -fx-background-color: rgba(31, 71, 56, 0.04);
-}
+.auth-option-link:hover { -fx-underline: true; }
 
-/* divider + footer */
-.divider-line { -fx-background-color: -border; }
-.divider-text { -fx-text-fill: -muted; -fx-font-size: 12px; }
-.footer-text { -fx-text-fill: -muted; -fx-font-size: 10px; }
+.auth-divider-line { -fx-background-color: -aiv-border-strong; }
+.auth-divider-text { -fx-text-fill: -aiv-muted; -fx-font-size: 12px; }
+.auth-note { -fx-text-fill: -aiv-muted; -fx-font-size: 12px; }
+.auth-legal { -fx-text-fill: -aiv-muted; -fx-font-size: 10px; }
+
+.auth-submit { -fx-min-height: 52px; }

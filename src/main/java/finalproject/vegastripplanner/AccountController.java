@@ -1,61 +1,70 @@
 package finalproject.vegastripplanner;
 
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import java.io.IOException;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.List;
 
+// Create account page (account.fxml)
 public class AccountController {
-    private static final String ERROR_COLOR = "#c62828";
+
+    private static final String INVALID = "aiv-invalid";   // red border, see theme.css
+
+    @FXML private TextField usernameField, firstNameField, lastNameField, contactField;
+    @FXML private PasswordField passwordField, confirmPasswordField;
+    @FXML private Button createAccountButton, signInLinkButton, backButton, showPasswordButton, showConfirmButton;
+    @FXML private Label errorLabel;
 
     @FXML
-    private TextField usernameField, firstNameField, lastNameField, contactField;
+    public void initialize() {
+        Ui.attachShowButton(passwordField, showPasswordButton);
+        Ui.attachShowButton(confirmPasswordField, showConfirmButton);
 
-    @FXML
-    private DatePicker birthdayPicker;
+        // Typing in a box that was marked wrong clears the red border
+        for (TextInputControl field : allFields()) {
+            field.textProperty().addListener((obs, oldText, newText) -> field.getStyleClass().remove(INVALID));
+        }
+    }
 
-    @FXML
-    private PasswordField passwordField, confirmPasswordField;
-
-    @FXML
-    private Button signUpButton, createAccountButton;
-
-    @FXML
-    private Button signInLinkButton;   // skip this line if you already have it
-
-
-    @FXML
-    protected void onSignInLinkClicked() throws IOException {
-        FXMLLoader loader = new FXMLLoader(MainPageApplication.class.getResource("main-page.fxml"));
-        Parent loginPage = loader.load();
-        signInLinkButton.getScene().setRoot(loginPage);
+    private List<TextInputControl> allFields() {
+        return List.of(firstNameField, lastNameField, usernameField, passwordField, confirmPasswordField, contactField);
     }
 
     @FXML
-    protected void onCreateAccountButtonClicked() throws IOException {
+    protected void onSignInLinkClicked() {
+        Navigator.go(signInLinkButton, Navigator.WELCOME);
+    }
+
+    @FXML
+    protected void onCreateAccountButtonClicked() {
+        clearError();
         String username = usernameField.getText().trim();
         String firstName = firstNameField.getText().trim();
         String lastName = lastNameField.getText().trim();
         String contact = contactField.getText().trim();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
-        LocalDate birthday = birthdayPicker.getValue(); // null if nothing was picked
 
         // Nothing is saved if a field is empty or the passwords don't match
-        if (username.isEmpty() || firstName.isEmpty() || lastName.isEmpty()
-                || contact.isEmpty() || password.isEmpty() || birthday == null) {
-            showMessage("Please fill in every field.", ERROR_COLOR);
+        boolean missing = false;
+        for (TextInputControl field : allFields()) {
+            if (field.getText() == null || field.getText().isBlank()) {
+                markInvalid(field);
+                missing = true;
+            }
+        }
+        if (missing) {
+            showError("Please fill in every field.");
             return;
         }
         if (!password.equals(confirmPassword)) {
-            showMessage("Your passwords don't match.", ERROR_COLOR);
+            markInvalid(confirmPasswordField);
+            showError("Your passwords don't match.");
             return;
         }
 
@@ -63,51 +72,47 @@ public class AccountController {
         String email = contact.contains("@") ? contact : null;
         String phone = contact.contains("@") ? null : contact;
 
+        UserDAO.User newUser;
         try {
-            // Saves to usersTable in AllInVegas.db (the password is stored scrambled, never as typed)
-            UserDAO.createAccount(firstName, lastName, username, password, email, phone, birthday);
+            // Saves to usersTable in AllInVegas.db (the password is stored scrambled, never as typed).
+            // The new design has no birthday field, so it is saved as empty.
+            UserDAO.createAccount(firstName, lastName, username, password, email, phone, null);
+            newUser = UserDAO.login(username, password);
         } catch (SQLException e) {
             String error = String.valueOf(e.getMessage());
             if (error.contains("usersTable.username")) {
-                showMessage("That username is already taken.", ERROR_COLOR);
+                markInvalid(usernameField);
+                showError("That username is already taken.");
             } else if (error.contains("usersTable.email")) {
-                showMessage("An account with that email already exists.", ERROR_COLOR);
+                markInvalid(contactField);
+                showError("An account with that email already exists.");
             } else {
                 e.printStackTrace();
-                showMessage("Couldn't create the account. Please try again.", ERROR_COLOR);
+                showError("Couldn't create the account. Please try again.");
             }
             return;
         }
 
-        usernameField.clear();
-        firstNameField.clear();
-        lastNameField.clear();
-        contactField.clear();
-        passwordField.clear();
-        confirmPasswordField.clear();
-        birthdayPicker.setValue(null);
-
-        showMessage("Account created! You can sign in now.", "#323232");
+        // Sign them straight in and take them to the trip preferences step
+        Session.login(newUser);
+        PlanningTripController preferences = Navigator.go(createAccountButton, Navigator.PREFERENCES);
+        if (preferences != null) {
+            preferences.showAccountCreated();
+        }
     }
 
-    // Small message that appears on top of the window and disappears after a few seconds.
-    private void showMessage(String text, String backgroundColor) {
-        Label message = new Label(text);
-        message.setStyle("-fx-background-color: " + backgroundColor + "; -fx-text-fill: white;"
-                + "-fx-padding: 8 16 8 16; -fx-background-radius: 6;");
+    private void markInvalid(TextInputControl field) {
+        if (!field.getStyleClass().contains(INVALID)) field.getStyleClass().add(INVALID);
+    }
 
-        Popup popup = new Popup();
-        popup.getContent().add(message);
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
 
-        Stage stage = (Stage) usernameField.getScene().getWindow();
-        popup.show(stage);
-
-        // Center it horizontally near the top of the window
-        popup.setX(stage.getX() + (stage.getWidth() - message.getWidth()) / 2);
-        popup.setY(stage.getY() + 60);
-
-        PauseTransition delay = new PauseTransition(Duration.seconds(6));
-        delay.setOnFinished(e -> popup.hide());
-        delay.play();
+    private void clearError() {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
     }
 }
