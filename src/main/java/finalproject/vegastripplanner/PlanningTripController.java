@@ -3,23 +3,14 @@ package finalproject.vegastripplanner;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -54,6 +45,10 @@ public class PlanningTripController {
     // ----- dates -----
     @FXML
     private DatePicker startDate, endDate;
+
+    // "✓ ACCOUNT CREATED" in the header, only shown right after sign-up
+    @FXML
+    private Label accountCreatedLabel;
 
     private int adultCount = 2;
     private int childCount = 0;
@@ -93,8 +88,20 @@ public class PlanningTripController {
             }
         });
 
+        // Selected interest cards get a check mark, like the design ("✓ Dining")
+        for (ToggleButton card : interestCategories.keySet()) {
+            String label = card.getText();
+            card.selectedProperty().addListener((obs, was, on) -> card.setText(on ? "✓  " + label : label));
+        }
+
         loadSavedPreferences();
         updateCounts();
+    }
+
+    /** Called by the Create account page right after a new account is made. */
+    public void showAccountCreated() {
+        accountCreatedLabel.setVisible(true);
+        accountCreatedLabel.setManaged(true);
     }
 
     // If the signed-in user saved preferences before, fill the page in with them.
@@ -178,9 +185,10 @@ public class PlanningTripController {
         Platform.exit();
     }
 
+    // Back to the dashboard when signed in, otherwise back to the sign-in page
     @FXML
     protected void onReturnButtonClicked(ActionEvent event) {
-        showPage(event, "main-page.fxml");
+        showPage(event, Session.isLoggedIn() ? Navigator.DASHBOARD : Navigator.WELCOME);
     }
 
     // "Skip for now - browse places": go to browsing without saving anything.
@@ -226,33 +234,18 @@ public class PlanningTripController {
         showBrowsingPage(event);
     }
 
-    // Loads an FXML page into the current window, full screen.
+    // Loads another page into the current window.
     private void showPage(ActionEvent event, String fxmlName) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
-            Parent root = loader.load();
-
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            window.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
-            window.setFullScreenExitHint("");
-            window.setFullScreen(true);
-            window.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Navigator.go((Node) event.getSource(), fxmlName);
     }
 
-    // Opens the browse-places page in the current window, full screen.
+    // Opens the browse-places page in the current window.
     private void showBrowsingPage(ActionEvent event) {
-        showPage(event, "browse-places.fxml");
+        showPage(event, Navigator.BROWSE);
     }
 
     private void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-        alert.setHeaderText(null);
-        alert.showAndWait();
+        Ui.info(startDate, message);
     }
 
 

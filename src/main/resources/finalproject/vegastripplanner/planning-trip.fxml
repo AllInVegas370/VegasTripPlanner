@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="trip-root" stylesheets="@planning.css" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="aiv-page" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.PlanningTripController">
+   <stylesheets>
+      <URL value="@theme.css" />
+      <URL value="@planning.css" />
+   </stylesheets>
 
    <!-- HEADER -->
    <top>
       <VBox>
          <padding>
-            <Insets left="48.0" right="48.0" top="35.0" />
+            <Insets left="48.0" right="48.0" top="30.0" />
          </padding>
          <children>
-            <HBox alignment="TOP_LEFT" styleClass="page-header">
+            <HBox alignment="TOP_LEFT" styleClass="aiv-nav">
                <children>
-                  <VBox spacing="6.0">
+                  <VBox spacing="5.0">
                      <children>
-                        <Label styleClass="brand-name-dark" text="ALL IN VEGAS" />
-                        <Label styleClass="brand-tagline-dark" text="YOUR TRIP. YOUR VEGAS." />
+                        <Label styleClass="aiv-brand" text="ALL IN VEGAS" />
+                        <Label styleClass="aiv-brand-tagline" text="YOUR TRIP. YOUR VEGAS." />
                      </children>
                   </VBox>
                   <Region HBox.hgrow="ALWAYS" />
-                  <HBox alignment="CENTER_RIGHT" spacing="28.0">
+                  <HBox alignment="CENTER_RIGHT" spacing="40.0">
                      <children>
-                        <Button fx:id="returnButton" mnemonicParsing="false" onAction="#onReturnButtonClicked" styleClass="header-link" text="Return" />
-                        <Button fx:id="quitButton" mnemonicParsing="false" onAction="#onQuitButtonClicked" styleClass="header-link" text="Quit" />
+                        <!-- shown by AccountController right after sign-up -->
+                        <Label fx:id="accountCreatedLabel" managed="false" styleClass="prefs-status" text="✓  ACCOUNT CREATED" visible="false" />
+                        <Button fx:id="returnButton" mnemonicParsing="false" onAction="#onReturnButtonClicked" styleClass="prefs-header-link" text="← Back" />
+                        <Button fx:id="quitButton" mnemonicParsing="false" onAction="#onQuitButtonClicked" styleClass="prefs-header-link" text="Quit" />
                      </children>
                      <padding>
-                        <Insets top="8.0" />
+                        <Insets top="6.0" />
                      </padding>
                   </HBox>
                </children>
@@ -50,9 +57,9 @@
                   <!-- intro -->
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Label styleClass="trip-eyebrow" text="A LITTLE YOU. A LOT OF VEGAS." />
-                        <Label styleClass="trip-title" text="Make Vegas yours." />
-                        <Label styleClass="trip-description" text="Tell us what you love. We'll find places that fit your trip." />
+                        <Label styleClass="aiv-eyebrow" text="A LITTLE YOU. A LOT OF VEGAS." />
+                        <Label styleClass="prefs-title" text="Make Vegas yours." />
+                        <Label styleClass="aiv-subtitle" text="Tell us what you love. We'll find places that fit your trip." />
                      </children>
                   </VBox>
 
@@ -61,19 +68,19 @@
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Label styleClass="section-title" text="What brings you to Vegas?" />
+                              <Label styleClass="prefs-section-title" text="What brings you to Vegas?" />
                               <Region HBox.hgrow="ALWAYS" />
-                              <Label styleClass="section-hint" text="Pick as many as you like" />
+                              <Label styleClass="prefs-hint" text="Pick as many as you like" />
                            </children>
                         </HBox>
                         <HBox spacing="12.0">
                            <children>
-                              <ToggleButton fx:id="diningToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="interest-option" text="Dining" HBox.hgrow="ALWAYS" />
-                              <ToggleButton fx:id="entertainmentToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="interest-option" text="Entertainment" HBox.hgrow="ALWAYS" />
-                              <ToggleButton fx:id="attractionsToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="interest-option" text="Attractions" HBox.hgrow="ALWAYS" />
-                              <ToggleButton fx:id="casinosToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="interest-option" text="Casinos" HBox.hgrow="ALWAYS" />
-                              <ToggleButton fx:id="hotelsToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="interest-option" text="Hotels" HBox.hgrow="ALWAYS" />
-                              <ToggleButton fx:id="shoppingToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="interest-option" text="Shopping" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="diningToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice" text="Dining" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="entertainmentToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice" text="Entertainment" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="attractionsToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice" text="Attractions" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="casinosToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice" text="Casinos" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="hotelsToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice" text="Hotels" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="shoppingToggle" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice" text="Shopping" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
@@ -84,9 +91,9 @@
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Label styleClass="section-title" text="Your daily budget" />
+                              <Label styleClass="prefs-section-title" text="Your daily budget" />
                               <Region HBox.hgrow="ALWAYS" />
-                              <Label styleClass="section-hint" text="Per person · USD" />
+                              <Label styleClass="prefs-hint" text="Per person · USD" />
                            </children>
                         </HBox>
                         <HBox spacing="16.0">
@@ -94,7 +101,7 @@
                               <ToggleGroup fx:id="budgetGroup" />
                            </fx:define>
                            <children>
-                              <ToggleButton contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="budget-option" toggleGroup="$budgetGroup" userData="UNDER_150" HBox.hgrow="ALWAYS">
+                              <ToggleButton contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice, prefs-budget" toggleGroup="$budgetGroup" userData="UNDER_150" HBox.hgrow="ALWAYS">
                                  <graphic>
                                     <VBox alignment="CENTER" spacing="3.0">
                                        <children>
@@ -104,7 +111,7 @@
                                     </VBox>
                                  </graphic>
                               </ToggleButton>
-                              <ToggleButton contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="budget-option" toggleGroup="$budgetGroup" userData="150_300" HBox.hgrow="ALWAYS">
+                              <ToggleButton contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice, prefs-budget" toggleGroup="$budgetGroup" userData="150_300" HBox.hgrow="ALWAYS">
                                  <graphic>
                                     <VBox alignment="CENTER" spacing="3.0">
                                        <children>
@@ -114,7 +121,7 @@
                                     </VBox>
                                  </graphic>
                               </ToggleButton>
-                              <ToggleButton contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="budget-option" toggleGroup="$budgetGroup" userData="OVER_300" HBox.hgrow="ALWAYS">
+                              <ToggleButton contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="0.0" styleClass="prefs-choice, prefs-budget" toggleGroup="$budgetGroup" userData="OVER_300" HBox.hgrow="ALWAYS">
                                  <graphic>
                                     <VBox alignment="CENTER" spacing="3.0">
                                        <children>
@@ -126,7 +133,7 @@
                               </ToggleButton>
                            </children>
                         </HBox>
-                        <Label styleClass="budget-note" text="For dining, shows &amp; activities. Excludes stays and travel." />
+                        <Label styleClass="prefs-hint" text="For dining, shows &amp; activities. Excludes stays and travel." />
                      </children>
                   </VBox>
 
@@ -137,7 +144,7 @@
                         <!-- who's coming -->
                         <VBox prefWidth="0.0" spacing="10.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label styleClass="section-title" text="Who's coming along?" />
+                              <Label styleClass="prefs-section-title" text="Who's coming along?" />
                               <HBox spacing="16.0">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefWidth="0.0" styleClass="guest-counter" HBox.hgrow="ALWAYS">
@@ -186,9 +193,9 @@
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label styleClass="section-title" text="When are you visiting?" />
+                                    <Label styleClass="prefs-section-title" text="When are you visiting?" />
                                     <Region HBox.hgrow="ALWAYS" />
-                                    <Label styleClass="section-hint" text="It's okay if you're not sure yet" />
+                                    <Label styleClass="prefs-hint" text="It's okay if you're not sure yet" />
                                  </children>
                               </HBox>
                               <HBox spacing="16.0">
@@ -215,8 +222,8 @@
                   <!-- actions -->
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="submitButton" mnemonicParsing="false" onAction="#onSubmitButtonClicked" prefWidth="320.0" styleClass="find-vegas-button" text="Find my Vegas" />
-                        <Button fx:id="skipButton" mnemonicParsing="false" onAction="#onSkipButtonClicked" styleClass="skip-button" text="Skip for now — browse places" />
+                        <Button fx:id="submitButton" mnemonicParsing="false" onAction="#onSubmitButtonClicked" prefWidth="320.0" styleClass="aiv-button-primary" defaultButton="true" text="Find my Vegas" />
+                        <Button fx:id="skipButton" mnemonicParsing="false" onAction="#onSkipButtonClicked" styleClass="aiv-link" text="Skip for now — browse places" />
                      </children>
                   </VBox>
                </children>
@@ -232,7 +239,7 @@
             <Insets bottom="42.0" top="20.0" />
          </padding>
          <children>
-            <Label styleClass="page-footer" text="Your plans can change. Your preferences can, too." />
+            <Label styleClass="prefs-reassurance" text="Your plans can change. Your preferences can, too." />
          </children>
       </VBox>
    </bottom>
