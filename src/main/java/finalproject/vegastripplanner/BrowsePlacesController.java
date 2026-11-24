@@ -37,6 +37,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -66,12 +67,11 @@ public class BrowsePlacesController {
     @FXML private Label detailDescription;
     @FXML private Label detailAddress;
     @FXML private Button saveButton;
+    @FXML private Button favoriteButton;
     @FXML private Button directionsButton;
     @FXML private Button itineraryButton;
 
     // ---- settings you may want to change ----
-    private static final String DATABASE_FILE = "AllInVegas.db";
-
     // A photo for one place goes in Images/places/ and is named after the place's ID,
     // for example Images/places/164.jpg. Places without a photo use the fallback.
     private static final String PLACE_IMAGE_FOLDER = "Images/places/";
@@ -93,11 +93,17 @@ public class BrowsePlacesController {
             "bar", "Bars",
             "shopping", "Shopping");
 
+    // category_ID in categoryTable -> category name (the chips' userData)
+    private static final Map<Integer, String> CATEGORY_BY_ID = Map.of(
+            1, "restaurant", 2, "bar", 3, "hotel", 4, "entertainment",
+            5, "shopping", 6, "casino", 7, "attraction");
+
     // ---- data and current choices ----
     private final List<Place> allPlaces = new ArrayList<>();
     private final Set<String> activeCategories = new LinkedHashSet<>();
     private final Set<String> activePrices = new LinkedHashSet<>();
-    private final Set<Integer> itineraryIds = new HashSet<>();   // places saved with "Save to my trip"
+    private final Set<Integer> itineraryIds = new HashSet<>();   // places in the current trip ("Save to my trip")
+    private final Set<Integer> favoriteIds = new HashSet<>();    // places the user favorited
     private final Map<String, Image> imageCache = new HashMap<>();
     private Image currentHeroImage;
 
@@ -128,7 +134,7 @@ public class BrowsePlacesController {
     @FXML
     public void initialize() {
         // Load the places, skipping any row that has no name.
-        for (Place p : new PlaceDao(DATABASE_FILE).getAllPlaces()) {
+        for (Place p : new PlaceDao().getAllPlaces()) {
             if (p.name() != null && !p.name().isBlank()) {
                 allPlaces.add(p);
             }
@@ -136,6 +142,7 @@ public class BrowsePlacesController {
 
         setUpChips(categoryChips, activeCategories);
         setUpChips(priceChips, activePrices);
+        loadUserData();
         setUpSortBox();
         setUpList();
         setUpDetailImage();
@@ -144,6 +151,38 @@ public class BrowsePlacesController {
         searchField.textProperty().addListener((obs, oldText, newText) -> applyFilters());
 
         applyFilters();
+    }
+
+    // For a signed-in user: load their favorites and current trip,
+    // and start the category chips on the interests they picked on the Plan a Trip page.
+    private void loadUserData() {
+        if (!Session.isLoggedIn()) return;
+        int userId = Session.getUser().id();
+
+        try {
+            for (UserDAO.FavoritePlace f : UserDAO.getFavorites(userId)) {
+                favoriteIds.add(f.placeId());
+            }
+
+            // Only look up a trip if they have one; a new one is made on their first "Save to my trip"
+            if (Session.getCurrentItineraryId() != null || !UserDAO.getItineraries(userId).isEmpty()) {
+                UserDAO.Itinerary trip = UserDAO.getOrCreateCurrentItinerary(userId);
+                itineraryIds.addAll(UserDAO.getPlaceIdsInItinerary(trip.id()));
+            }
+
+            List<String> interests = new ArrayList<>();
+            for (int categoryId : UserDAO.getInterests(userId)) {
+                String name = CATEGORY_BY_ID.get(categoryId);
+                if (name != null && chipKeys(categoryChips).contains(name)) interests.add(name);
+            }
+            if (!interests.isEmpty()) {
+                activeCategories.clear();
+                activeCategories.addAll(interests);
+                refreshChips(categoryChips, activeCategories);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUpSortBox() {
@@ -441,6 +480,7 @@ public class BrowsePlacesController {
             detailAddress.setText("—");
             setHeroImage(null);
             saveButton.setDisable(true);
+            favoriteButton.setDisable(true);
             directionsButton.setDisable(true);
             return;
         }
@@ -454,8 +494,10 @@ public class BrowsePlacesController {
         setHeroImage(loadImage(place, 920));
 
         saveButton.setDisable(false);
+        favoriteButton.setDisable(false);
         directionsButton.setDisable(false);
         updateSaveButton(place);
+        updateFavoriteButton(place);
     }
 
     private void setHeroImage(Image image) {
@@ -468,15 +510,60 @@ public class BrowsePlacesController {
         saveButton.setText(itineraryIds.contains(place.id()) ? "✓ Saved to my trip" : "Save to my trip");
     }
 
+    private void updateFavoriteButton(Place place) {
+        favoriteButton.setText(favoriteIds.contains(place.id()) ? "♥ Favorited" : "♡ Favorite");
+    }
+
+    // Adds the place to the current trip (day 1), or takes it out if it's already there.
+    // Days can be changed on the itinerary page.
     @FXML
     protected void onSaveClicked() {
         Place place = placesList.getSelectionModel().getSelectedItem();
         if (place == null) return;
+        if (!Session.isLoggedIn()) {
+            showMessage("Sign in to save places to a trip.");
+            return;
+        }
 
-        if (!itineraryIds.remove(place.id())) {
-            itineraryIds.add(place.id());
+        try {
+            UserDAO.Itinerary trip = UserDAO.getOrCreateCurrentItinerary(Session.getUser().id());
+            if (itineraryIds.contains(place.id())) {
+                UserDAO.removePlaceFromItinerary(trip.id(), place.id());
+                itineraryIds.remove(place.id());
+            } else {
+                UserDAO.addPlaceToItinerary(trip.id(), place.id(), 1);
+                itineraryIds.add(place.id());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showMessage("Couldn't update your trip. Please try again.");
         }
         updateSaveButton(place);
+    }
+
+    @FXML
+    protected void onFavoriteClicked() {
+        Place place = placesList.getSelectionModel().getSelectedItem();
+        if (place == null) return;
+        if (!Session.isLoggedIn()) {
+            showMessage("Sign in to save favorites.");
+            return;
+        }
+
+        int userId = Session.getUser().id();
+        try {
+            if (favoriteIds.contains(place.id())) {
+                UserDAO.removeFavorite(userId, place.id());
+                favoriteIds.remove(place.id());
+            } else {
+                UserDAO.addFavorite(userId, place.id());
+                favoriteIds.add(place.id());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showMessage("Couldn't update your favorites. Please try again.");
+        }
+        updateFavoriteButton(place);
     }
 
     // Opens Google Maps directions to the selected place in the computer's web browser
@@ -556,6 +643,7 @@ public class BrowsePlacesController {
 
     @FXML
     protected void onLogOutClicked(ActionEvent event) {
+        Session.logout();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
             Parent root = loader.load();

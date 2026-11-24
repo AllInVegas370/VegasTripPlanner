@@ -7,63 +7,102 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="browse-root" stylesheets="@browse.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.ItineraryController">   <top>
-      <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="80.0" prefWidth="450.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="150.0" />
-         </BorderPane.margin>
+<!-- Itinerary page: your trips (left), the selected trip day by day (middle), your favorites (right).
+     The day-by-day rows are built in ItineraryController, so the middle column is just an empty VBox here. -->
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="browse-root" stylesheets="@browse.css" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.ItineraryController">
+
+   <!-- HEADER: brand + navigation -->
+   <top>
+      <VBox>
+         <padding>
+            <Insets left="48.0" right="48.0" top="30.0" />
+         </padding>
          <children>
-            <Label prefHeight="26.0" prefWidth="123.0" styleClass="section-title" text="Days Planned">
-               <HBox.margin>
-                  <Insets left="15.0" top="51.0" />
-               </HBox.margin>
-            </Label>
-            <Button fx:id="back" mnemonicParsing="false" onAction="#onReturnButtonClicked" prefHeight="27.0" prefWidth="98.0" styleClass="nav-button-active" text="Return">
-               <HBox.margin>
-                  <Insets left="200.0" top="10.0" />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
-   </top>
-   <left>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="142.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-         <children>
-            <Label alignment="CENTER" prefHeight="30.0" prefWidth="160.0" styleClass="brand-name-dark" text="All In Vegas" textAlignment="CENTER">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Label>
-            <Label alignment="CENTER" prefHeight="23.0" prefWidth="120.0" styleClass="section-title" text="Current List" textAlignment="CENTER">
-               <VBox.margin>
-                  <Insets left="10.0" top="20.0" />
-               </VBox.margin>
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <ListView prefHeight="312.0" prefWidth="142.0" styleClass="places-list" />
-         </children>
-      </VBox>
-   </left>
-   <center>
-      <ScrollPane styleClass="page-scroll" BorderPane.alignment="CENTER">
-         <content>
-            <HBox prefHeight="326.0" prefWidth="458.0">
+            <HBox alignment="CENTER_LEFT" styleClass="page-header">
                <children>
-                  <ListView prefHeight="326.0" prefWidth="154.0" styleClass="places-list" />
+                  <VBox spacing="6.0">
+                     <children>
+                        <Label styleClass="brand-name-dark" text="ALL IN VEGAS" />
+                        <Label styleClass="brand-tagline-dark" text="YOUR TRIP. YOUR VEGAS." />
+                     </children>
+                  </VBox>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                     <children>
+                        <Button mnemonicParsing="false" styleClass="nav-button-active" text="Your Itinerary" />
+                        <Button fx:id="back" mnemonicParsing="false" onAction="#onReturnButtonClicked" styleClass="nav-button" text="Browse places" />
+                     </children>
+                  </HBox>
                </children>
             </HBox>
-         </content>
-      </ScrollPane>
+         </children>
+      </VBox>
+   </top>
+
+   <!-- MAIN CONTENT -->
+   <center>
+      <HBox spacing="22.0">
+         <padding>
+            <Insets bottom="30.0" left="48.0" right="48.0" top="24.0" />
+         </padding>
+         <children>
+
+            <!-- trips -->
+            <VBox minWidth="280.0" prefWidth="300.0" spacing="12.0" styleClass="detail-panel">
+               <padding>
+                  <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+               </padding>
+               <children>
+                  <Label styleClass="section-title" text="My trips" />
+                  <Label styleClass="section-hint" text="Pick a trip to see its plan." />
+                  <ListView fx:id="tripsList" VBox.vgrow="ALWAYS" />
+                  <HBox spacing="10.0">
+                     <children>
+                        <Button fx:id="newTripButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onNewTripClicked" prefWidth="0.0" styleClass="primary-button" text="New trip" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="deleteTripButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDeleteTripClicked" prefWidth="0.0" styleClass="secondary-button" text="Delete trip" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+
+            <!-- selected trip, day by day -->
+            <VBox spacing="10.0" styleClass="detail-panel" HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="18.0" left="22.0" right="22.0" top="18.0" />
+               </padding>
+               <children>
+                  <Label fx:id="tripTitle" styleClass="detail-title" text="Your itinerary" wrapText="true" />
+                  <Label fx:id="tripDates" styleClass="section-hint" text="" />
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="detail-scroll" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="daysBox" spacing="10.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+
+            <!-- favorites -->
+            <VBox minWidth="300.0" prefWidth="320.0" spacing="12.0" styleClass="detail-panel">
+               <padding>
+                  <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+               </padding>
+               <children>
+                  <Label styleClass="section-title" text="Favorites" />
+                  <Label styleClass="section-hint" text="Add a favorite to the selected trip (day 1)." wrapText="true" />
+                  <ListView fx:id="favoritesList" VBox.vgrow="ALWAYS" />
+                  <HBox spacing="10.0">
+                     <children>
+                        <Button fx:id="addFavoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAddFavoriteToTripClicked" prefWidth="0.0" styleClass="primary-button" text="Add to trip" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="removeFavoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onRemoveFavoriteClicked" prefWidth="0.0" styleClass="secondary-button" text="Remove" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+
+         </children>
+      </HBox>
    </center>
 </BorderPane>
