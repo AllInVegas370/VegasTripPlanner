@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -16,205 +17,183 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="browse-root" stylesheets="@browse.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.BrowsePlacesController">
+<!-- Browse places -->
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="aiv-page" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.BrowsePlacesController">
+    <stylesheets>
+        <URL value="@theme.css" />
+        <URL value="@browse.css" />
+    </stylesheets>
 
-    <!-- HEADER: brand + navigation -->
+    <!-- HEADER: shared navigation bar -->
     <top>
         <VBox>
             <padding>
                 <Insets left="48.0" right="48.0" top="30.0" />
             </padding>
             <children>
-                <HBox alignment="CENTER_LEFT" styleClass="page-header">
-                    <children>
-                        <VBox spacing="6.0">
-                            <children>
-                                <Label styleClass="brand-name-dark" text="ALL IN VEGAS" />
-                                <Label styleClass="brand-tagline-dark" text="YOUR TRIP. YOUR VEGAS." />
-                            </children>
-                        </VBox>
-                        <Region HBox.hgrow="ALWAYS" />
-                        <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="709.0" spacing="12.0">
-                            <children>
-                                <Button fx:id="itineraryButton" mnemonicParsing="false" onAction="#onItineraryClicked" styleClass="nav-button" text="Your Itinirary" />
-                                <Button fx:id="browseNavButton" mnemonicParsing="false" styleClass="nav-button-active" text="Browse places" />
-                                <Button fx:id="dashboardButton" mnemonicParsing="false" onAction="#onComingSoonClicked" styleClass="nav-button" text="My dashboard" />
-                                <Button fx:id="accountSettingsButton" mnemonicParsing="false" onAction="#onComingSoonClicked" styleClass="nav-button" text="Account settings">
-                                    <HBox.margin>
-                                        <Insets left="40.0" />
-                                    </HBox.margin>
-                                </Button>
-                                <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#onLogOutClicked" styleClass="nav-button" text="Log out" />
-                            </children>
-                        </HBox>
-                    </children>
-                </HBox>
+                <fx:include fx:id="navBar" source="nav-bar.fxml" />
             </children>
         </VBox>
     </top>
 
     <!-- MAIN CONTENT -->
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="page-scroll">
-            <content>
-                <VBox minHeight="640.0" spacing="22.0">
-                    <padding>
-                        <Insets bottom="10.0" left="48.0" right="48.0" top="26.0" />
-                    </padding>
-                    <children>
+        <VBox spacing="22.0">
+            <padding>
+                <Insets bottom="10.0" left="48.0" right="48.0" top="24.0" />
+            </padding>
+            <children>
 
-                        <!-- welcome + search -->
-                        <HBox alignment="BOTTOM_LEFT">
+                <!-- welcome + search -->
+                <HBox alignment="BOTTOM_LEFT">
+                    <children>
+                        <VBox spacing="6.0">
                             <children>
-                                <VBox spacing="8.0">
+                                <Label fx:id="greetingLabel" styleClass="aiv-eyebrow" text="GOOD TO SEE YOU, TRAVELER." />
+                                <Label styleClass="aiv-title" text="Find your kind of Vegas." />
+                                <Label styleClass="aiv-subtitle" text="Big nights, hidden gems, and everything in between." />
+                            </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox alignment="CENTER" spacing="12.0">
+                            <children>
+                                <TextField fx:id="searchField" onAction="#onSearchClicked" prefWidth="360.0" promptText="Search places or neighborhoods" />
+                                <Button fx:id="searchButton" mnemonicParsing="false" onAction="#onSearchClicked" prefWidth="94.0" styleClass="aiv-button-primary" text="Search" />
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+
+                <!-- filters -->
+                <VBox spacing="16.0" styleClass="browse-filters">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="18.0">
+                            <children>
+                                <VBox minWidth="198.0" prefWidth="198.0" spacing="5.0">
                                     <children>
-                                        <Label styleClass="trip-eyebrow" text="GOOD TO SEE YOU, TRAVELER." />
-                                        <Label styleClass="browse-title" text="Find your kind of Vegas." />
-                                        <Label styleClass="trip-description" text="Big nights, hidden gems, and everything in between." />
+                                        <Label styleClass="browse-filter-label" text="Categories" />
+                                        <Label styleClass="browse-filter-hint" text="Choose one, a few, or all." />
                                     </children>
                                 </VBox>
-                                <Region HBox.hgrow="ALWAYS" />
-                                <HBox alignment="CENTER" spacing="10.0">
+                                <FlowPane fx:id="categoryChips" hgap="8.0" vgap="8.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <TextField fx:id="searchField" onAction="#onSearchClicked" prefWidth="360.0" promptText="Search places or addresses" styleClass="search-field" />
-                                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#onSearchClicked" styleClass="search-button" text="Search" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip, browse-chip-all" text="Select all" userData="ALL" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Casinos" userData="casino" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Hotels" userData="hotel" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Entertainment" userData="entertainment" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Attractions" userData="attraction" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Restaurants" userData="restaurant" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Bars" userData="bar" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Shopping" userData="shopping" />
                                     </children>
-                                </HBox>
+                                </FlowPane>
                             </children>
                         </HBox>
 
-                        <!-- filters -->
-                        <VBox spacing="16.0" styleClass="filter-panel">
+                        <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0" styleClass="aiv-divider" />
+
+                        <HBox alignment="CENTER_LEFT" spacing="18.0">
                             <children>
-                                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                <VBox minWidth="198.0" prefWidth="198.0" spacing="5.0">
                                     <children>
-                                        <VBox minWidth="170.0" prefWidth="170.0" spacing="4.0">
-                                            <children>
-                                                <Label styleClass="filter-title" text="Categories" />
-                                                <Label styleClass="filter-hint" text="Choose one, a few, or all." />
-                                            </children>
-                                        </VBox>
-                                        <FlowPane fx:id="categoryChips" hgap="10.0" vgap="10.0" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Select all" userData="ALL" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Casinos" userData="casino" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Hotels" userData="hotel" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Entertainment" userData="entertainment" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Attractions" userData="attraction" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Restaurants" userData="restaurant" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Bars" userData="bar" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Shopping" userData="shopping" />
-                                            </children>
-                                        </FlowPane>
-                                    </children>
-                                </HBox>
-
-                                <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0" styleClass="divider-line" />
-
-                                <HBox alignment="CENTER_LEFT" spacing="20.0">
-                                    <children>
-                                        <VBox minWidth="170.0" prefWidth="170.0" spacing="4.0">
-                                            <children>
-                                                <Label styleClass="filter-title" text="Price levels" />
-                                                <Label styleClass="filter-hint" text="Select multiple price levels." />
-                                            </children>
-                                        </VBox>
-                                        <FlowPane fx:id="priceChips" hgap="10.0" vgap="10.0" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Select all" userData="ALL" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="Free" userData="Free" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="\$" userData="\$" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="\$\$" userData="\$\$" />
-                                                <ToggleButton mnemonicParsing="false" styleClass="filter-chip" text="\$\$\$" userData="\$\$\$" />
-                                            </children>
-                                        </FlowPane>
-                                        <Label fx:id="filterSummary" styleClass="filter-hint" text="All categories · All prices" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
-
-                        <!-- list + details -->
-                        <HBox spacing="24.0" VBox.vgrow="ALWAYS">
-                            <children>
-
-                                <!-- places list -->
-                                <VBox spacing="14.0" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <HBox alignment="CENTER_LEFT" spacing="12.0">
-                                            <children>
-                                                <Label styleClass="section-title" text="Places to explore" />
-                                                <Label fx:id="countLabel" styleClass="section-hint" text="0 places" />
-                                                <Region HBox.hgrow="ALWAYS" />
-                                                <ComboBox fx:id="sortBox" prefWidth="260.0" styleClass="sort-box" />
-                                            </children>
-                                        </HBox>
-                                        <ListView fx:id="placesList" styleClass="places-list" VBox.vgrow="ALWAYS" />
+                                        <Label styleClass="browse-filter-label" text="Price levels" />
+                                        <Label styleClass="browse-filter-hint" text="Select multiple price levels." />
                                     </children>
                                 </VBox>
-
-                                <!-- details panel -->
-                                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="470.0" minWidth="400.0" prefWidth="470.0" styleClass="detail-scroll">
-                                    <content>
-                                        <VBox styleClass="detail-panel">
-                                            <children>
-                                                <StackPane fx:id="detailImageBox" maxHeight="190.0" minHeight="190.0" prefHeight="190.0">
-                                                    <children>
-                                                        <ImageView fx:id="detailImage" pickOnBounds="true" />
-                                                        <Label styleClass="discovery-chip" text="YOUR NEXT DISCOVERY" StackPane.alignment="TOP_LEFT">
-                                                            <StackPane.margin>
-                                                                <Insets left="14.0" top="14.0" />
-                                                            </StackPane.margin>
-                                                        </Label>
-                                                    </children>
-                                                </StackPane>
-                                                <VBox spacing="12.0">
-                                                    <padding>
-                                                        <Insets bottom="18.0" left="20.0" right="20.0" top="18.0" />
-                                                    </padding>
-                                                    <children>
-                                                        <Label fx:id="detailEyebrow" styleClass="detail-eyebrow" text="CATEGORY" />
-                                                        <Label fx:id="detailTitle" styleClass="detail-title" text="Place name" wrapText="true" />
-                                                        <Label fx:id="detailDescription" styleClass="detail-description" text="Description" wrapText="true" />
-                                                        <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0" styleClass="divider-line">
-                                                            <VBox.margin>
-                                                                <Insets top="4.0" />
-                                                            </VBox.margin>
-                                                        </Region>
-                                                        <Label styleClass="detail-eyebrow" text="FIND IT HERE" />
-                                                        <Label fx:id="detailAddress" styleClass="detail-address" text="Address" wrapText="true" />
-                                                        <HBox spacing="12.0">
-                                                            <children>
-                                                                <Button fx:id="saveButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveClicked" prefWidth="0.0" styleClass="primary-button" text="Save to my trip" HBox.hgrow="ALWAYS" />
-                                                                <Button fx:id="favoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFavoriteClicked" prefWidth="0.0" styleClass="secondary-button" text="♡ Favorite" HBox.hgrow="ALWAYS" />
-                                                                <Button fx:id="directionsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDirectionsClicked" prefWidth="0.0" styleClass="secondary-button" text="Get directions" HBox.hgrow="ALWAYS" />
-                                                            </children>
-                                                        </HBox>
-                                                        <Label styleClass="detail-footnote" text="Select another place to see its photo and details here." />
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </VBox>
-                                    </content>
-                                </ScrollPane>
+                                <FlowPane fx:id="priceChips" hgap="8.0" vgap="8.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip, browse-chip-all" text="Select all" userData="ALL" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Free" userData="Free" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$" userData="\$" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$\$" userData="\$\$" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$\$\$" userData="\$\$\$" />
+                                    </children>
+                                </FlowPane>
+                                <Label fx:id="filterSummary" minWidth="-Infinity" styleClass="browse-filter-hint" text="All categories · All prices" />
                             </children>
                         </HBox>
                     </children>
                 </VBox>
-            </content>
-        </ScrollPane>
+
+                <!-- list + details -->
+                <HBox spacing="24.0" VBox.vgrow="ALWAYS">
+                    <children>
+
+                        <!-- places list -->
+                        <VBox spacing="16.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                    <children>
+                                        <Label styleClass="browse-list-title" text="Places to explore" />
+                                        <Label fx:id="countLabel" styleClass="aiv-small" text="0 places" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <ComboBox fx:id="sortBox" prefWidth="250.0" styleClass="browse-sort" />
+                                    </children>
+                                </HBox>
+                                <ListView fx:id="placesList" VBox.vgrow="ALWAYS" />
+                            </children>
+                        </VBox>
+
+                        <!-- details panel -->
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="500.0" minWidth="400.0" prefWidth="480.0">
+                            <content>
+                                <VBox fx:id="detailPanel" styleClass="aiv-card">
+                                    <children>
+                                        <StackPane fx:id="detailImageBox" maxHeight="220.0" minHeight="220.0" prefHeight="220.0">
+                                            <children>
+                                                <ImageView fx:id="detailImage" pickOnBounds="true" />
+                                                <Label styleClass="browse-feature-badge" text="YOUR NEXT DISCOVERY" StackPane.alignment="TOP_LEFT">
+                                                    <StackPane.margin>
+                                                        <Insets left="16.0" top="16.0" />
+                                                    </StackPane.margin>
+                                                </Label>
+                                            </children>
+                                        </StackPane>
+                                        <VBox spacing="16.0">
+                                            <padding>
+                                                <Insets bottom="24.0" left="24.0" right="24.0" top="22.0" />
+                                            </padding>
+                                            <children>
+                                                <Label fx:id="detailEyebrow" styleClass="aiv-eyebrow" text="CATEGORY" />
+                                                <Label fx:id="detailTitle" styleClass="browse-feature-title" text="Place name" wrapText="true" />
+                                                <Label fx:id="detailDescription" styleClass="browse-feature-text" text="Description" wrapText="true" />
+                                                <FlowPane fx:id="detailTags" hgap="8.0" vgap="8.0" />
+                                                <VBox spacing="8.0" styleClass="browse-address">
+                                                    <children>
+                                                        <Label styleClass="aiv-eyebrow" text="FIND IT HERE" />
+                                                        <Label fx:id="detailAddress" styleClass="browse-address-text" text="Address" wrapText="true" />
+                                                    </children>
+                                                </VBox>
+                                                <HBox spacing="12.0">
+                                                    <children>
+                                                        <Button fx:id="saveButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveClicked" prefWidth="0.0" styleClass="aiv-button-primary" text="Save to my trip" HBox.hgrow="ALWAYS" />
+                                                        <Button fx:id="directionsButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onDirectionsClicked" styleClass="aiv-button, browse-action" text="Get directions" />
+                                                    </children>
+                                                </HBox>
+                                                <Button fx:id="favoriteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFavoriteClicked" styleClass="aiv-button" text="♡  Add to favorites" />
+                                                <Label fx:id="tripHint" styleClass="aiv-small" text="Select another place to see its photo and details here." wrapText="true" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
     </center>
 
     <!-- FOOTER -->
     <bottom>
         <HBox alignment="CENTER_LEFT">
             <padding>
-                <Insets bottom="22.0" left="48.0" right="48.0" top="12.0" />
+                <Insets bottom="20.0" left="48.0" right="48.0" top="12.0" />
             </padding>
             <children>
-                <Label styleClass="page-footer" text="A little inspiration for your next trip. Check current prices and details with each venue." />
+                <Label styleClass="aiv-footer-text" text="A little inspiration for your next trip. Check current prices and details with each venue." />
                 <Region HBox.hgrow="ALWAYS" />
-                <Label styleClass="page-footer" text="© 2026 All In Vegas" />
+                <Label styleClass="aiv-footer-text" text="© 2026 All In Vegas" />
             </children>
         </HBox>
     </bottom>

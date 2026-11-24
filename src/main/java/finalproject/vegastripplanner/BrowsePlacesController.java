@@ -1,18 +1,12 @@
 package finalproject.vegastripplanner;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -27,20 +21,16 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -52,6 +42,8 @@ import java.util.Set;
 public class BrowsePlacesController {
 
     // ---- things from browse-places.fxml ----
+    @FXML private NavBarController navBarController;   // the included nav-bar.fxml
+    @FXML private Label greetingLabel;
     @FXML private TextField searchField;
     @FXML private FlowPane categoryChips;
     @FXML private FlowPane priceChips;
@@ -65,23 +57,19 @@ public class BrowsePlacesController {
     @FXML private Label detailEyebrow;
     @FXML private Label detailTitle;
     @FXML private Label detailDescription;
+    @FXML private FlowPane detailTags;
     @FXML private Label detailAddress;
+    @FXML private Label tripHint;
     @FXML private Button saveButton;
     @FXML private Button favoriteButton;
     @FXML private Button directionsButton;
-    @FXML private Button itineraryButton;
-
-    // ---- settings you may want to change ----
-    // A photo for one place goes in Images/places/ and is named after the place's ID,
-    // for example Images/places/164.jpg. Places without a photo use the fallback.
-    private static final String PLACE_IMAGE_FOLDER = "Images/places/";
-    private static final String FALLBACK_IMAGE = "Images/vegas-landscape.jpg";
 
     private static final String ALL = "ALL";   // userData of the "Select all" chips
     private static final String CHIP_LABEL = "chipLabel";
-    private static final double HERO_HEIGHT = 190;
-    private static final double THUMB_WIDTH = 100;
-    private static final double THUMB_HEIGHT = 76;
+    private static final double HERO_HEIGHT = 220;
+    private static final double THUMB_WIDTH = 120;
+    private static final double THUMB_HEIGHT = 86;
+    private static final double ROW_HEIGHT = 118;   // card (106) + gap (12)
 
     // Database category name -> name shown on screen
     private static final Map<String, String> CATEGORY_LABELS = Map.of(
@@ -104,8 +92,8 @@ public class BrowsePlacesController {
     private final Set<String> activePrices = new LinkedHashSet<>();
     private final Set<Integer> itineraryIds = new HashSet<>();   // places in the current trip ("Save to my trip")
     private final Set<Integer> favoriteIds = new HashSet<>();    // places the user favorited
-    private final Map<String, Image> imageCache = new HashMap<>();
     private Image currentHeroImage;
+    private String currentTripName;
 
     // To add another way to sort, add one line to this list.
     private final List<SortOption> sortOptions = List.of(
@@ -133,6 +121,11 @@ public class BrowsePlacesController {
 
     @FXML
     public void initialize() {
+        navBarController.setActive(NavBarController.BROWSE);
+        if (Session.isLoggedIn()) {
+            greetingLabel.setText("GOOD TO SEE YOU, " + Session.getUser().firstName().toUpperCase() + ".");
+        }
+
         // Load the places, skipping any row that has no name.
         for (Place p : new PlaceDao().getAllPlaces()) {
             if (p.name() != null && !p.name().isBlank()) {
@@ -168,6 +161,7 @@ public class BrowsePlacesController {
             if (Session.getCurrentItineraryId() != null || !UserDAO.getItineraries(userId).isEmpty()) {
                 UserDAO.Itinerary trip = UserDAO.getOrCreateCurrentItinerary(userId);
                 itineraryIds.addAll(UserDAO.getPlaceIdsInItinerary(trip.id()));
+                currentTripName = trip.name();
             }
 
             List<String> interests = new ArrayList<>();
@@ -203,7 +197,7 @@ public class BrowsePlacesController {
     }
 
     private void setUpList() {
-        placesList.setFixedCellSize(100);
+        placesList.setFixedCellSize(ROW_HEIGHT);
         placesList.setCellFactory(lv -> new PlaceCell());
         placesList.setPlaceholder(new Label("No places match your search and filters."));
         placesList.getSelectionModel().selectedItemProperty()
@@ -214,12 +208,12 @@ public class BrowsePlacesController {
     private void setUpDetailImage() {
         Rectangle clip = new Rectangle();
         // The clip is taller than the box, so only the top corners show as rounded.
-        clip.setArcWidth(18);
-        clip.setArcHeight(18);
+        clip.setArcWidth(16);
+        clip.setArcHeight(16);
         detailImageBox.layoutBoundsProperty().addListener((obs, oldBounds, bounds) -> {
             clip.setWidth(bounds.getWidth());
             clip.setHeight(bounds.getHeight() + 20);
-            showCover(detailImage, currentHeroImage, bounds.getWidth(), HERO_HEIGHT);
+            Ui.showCover(detailImage, currentHeroImage, bounds.getWidth(), HERO_HEIGHT);
         });
         detailImageBox.setClip(clip);
     }
@@ -392,19 +386,16 @@ public class BrowsePlacesController {
         private final HBox card;
 
         PlaceCell() {
-            Rectangle clip = new Rectangle(THUMB_WIDTH, THUMB_HEIGHT);
-            clip.setArcWidth(12);
-            clip.setArcHeight(12);
-            thumb.setClip(clip);
+            Ui.roundCorners(thumb, THUMB_WIDTH, THUMB_HEIGHT, 5);
 
-            name.getStyleClass().add("place-name");
+            name.getStyleClass().add("browse-place-name");
             name.setMaxWidth(Double.MAX_VALUE);
-            subtitle.getStyleClass().add("place-subtitle");
-            meta.getStyleClass().add("place-meta");
-            price.getStyleClass().add("price-pill");
-            viewDetails.getStyleClass().add("place-view");
+            subtitle.getStyleClass().add("browse-place-text");
+            meta.getStyleClass().add("browse-place-text");
+            price.getStyleClass().add("aiv-pill");
+            viewDetails.getStyleClass().add("browse-place-view");
 
-            VBox text = new VBox(4, name, subtitle, meta);
+            VBox text = new VBox(7, name, subtitle, meta);
             text.setAlignment(Pos.CENTER_LEFT);
             text.setMinWidth(0);
             HBox.setHgrow(text, Priority.ALWAYS);
@@ -413,18 +404,19 @@ public class BrowsePlacesController {
             VBox.setVgrow(spacer, Priority.ALWAYS);
             VBox right = new VBox(price, spacer, viewDetails);
             right.setAlignment(Pos.TOP_RIGHT);
-            right.setPrefWidth(110);
-            right.setMinWidth(110);
+            right.setMinWidth(100);
+            right.setPadding(new javafx.geometry.Insets(4, 4, 4, 0));
 
-            card = new HBox(16, thumb, text, right);
+            card = new HBox(18, thumb, text, right);
             card.setAlignment(Pos.CENTER_LEFT);
-            card.getStyleClass().add("place-card");
-            card.setMaxHeight(92);   // leaves a gap between rows (each row is 100 high)
+            card.getStyleClass().add("browse-place");
+            card.setMinHeight(106);
+            card.setMaxHeight(106);   // leaves a gap between rows (each row is 118 high)
             // A cell does not stretch its contents by itself, so tie the card's width to the row's width
-            card.prefWidthProperty().bind(widthProperty().subtract(12));
+            card.prefWidthProperty().bind(widthProperty().subtract(14));
 
             setGraphic(null);
-            setContentDisplay(javafx.scene.control.ContentDisplay.GRAPHIC_ONLY);
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             setAlignment(Pos.TOP_LEFT);
 
             // The selected row says "Viewing details" instead of "View details"
@@ -440,15 +432,18 @@ public class BrowsePlacesController {
                 return;
             }
 
-            showCover(thumb, loadImage(place, 240), THUMB_WIDTH, THUMB_HEIGHT);
+            Ui.showCover(thumb, Ui.placeImage(place.id(), 240), THUMB_WIDTH, THUMB_HEIGHT);
             name.setText(place.name());
 
-            String shortAddress = shortAddress(place);
+            String shortAddress = Ui.shortAddress(place.address());
             subtitle.setText(shortAddress);
             subtitle.setVisible(!shortAddress.isEmpty());
             subtitle.setManaged(!shortAddress.isEmpty());
 
-            meta.setText(categoryLabel(place));
+            String extras = "";
+            if (favoriteIds.contains(place.id())) extras += "  ·  ♥ Favorite";
+            if (itineraryIds.contains(place.id())) extras += "  ·  ✓ In your trip";
+            meta.setText(categoryLabel(place) + extras);
 
             boolean hasPrice = place.priceLevel() != null && !place.priceLevel().isBlank();
             price.setText(hasPrice ? place.priceLevel() : "");
@@ -460,19 +455,12 @@ public class BrowsePlacesController {
         }
     }
 
-    // Just the street part of an address, e.g. "3600 South Las Vegas Boulevard"
-    private static String shortAddress(Place p) {
-        if (p.address() == null || p.address().isBlank()) return "";
-        int comma = p.address().indexOf(',');
-        return comma > 0 ? p.address().substring(0, comma) : p.address();
-    }
-
-
     // ---------------------------------------------------------------
     //  Details panel
     // ---------------------------------------------------------------
 
     private void showDetails(Place place) {
+        detailTags.getChildren().clear();
         if (place == null) {
             detailEyebrow.setText("");
             detailTitle.setText("No place selected");
@@ -489,29 +477,62 @@ public class BrowsePlacesController {
         detailEyebrow.setText(categoryLabel(place).toUpperCase() + (hasPrice ? "  /  " + place.priceLevel() : ""));
         detailTitle.setText(place.name());
         // The database has no descriptions yet. When a description column is added, show it here.
-        detailDescription.setText("More details about this place are coming soon.");
+        detailDescription.setText("More details about this place are coming soon. "
+                + "Save it to your trip or favorites to keep it close.");
         detailAddress.setText(place.locationDisplay().equals("Not listed") ? "Address not listed" : place.locationDisplay());
-        setHeroImage(loadImage(place, 920));
+        setHeroImage(Ui.placeImage(place.id(), 960));
 
         saveButton.setDisable(false);
         favoriteButton.setDisable(false);
         directionsButton.setDisable(false);
         updateSaveButton(place);
         updateFavoriteButton(place);
+        updateTags(place);
+    }
+
+    // Little rounded tags under the description
+    private void updateTags(Place place) {
+        detailTags.getChildren().clear();
+        List<String> tags = new ArrayList<>();
+        tags.add(categoryLabel(place));
+        boolean hasPrice = place.priceLevel() != null && !place.priceLevel().isBlank();
+        tags.add(!hasPrice ? "Price not listed" : place.priceLevel().equals("Free") ? "Free admission" : place.priceLevel());
+        if (favoriteIds.contains(place.id())) tags.add("♥ In favorites");
+        if (itineraryIds.contains(place.id())) tags.add("✓ In your trip");
+        for (String tag : tags) {
+            Label label = new Label(tag);
+            label.getStyleClass().add("aiv-tag");
+            detailTags.getChildren().add(label);
+        }
     }
 
     private void setHeroImage(Image image) {
         currentHeroImage = image;
-        double width = detailImageBox.getWidth() > 0 ? detailImageBox.getWidth() : 450;
-        showCover(detailImage, image, width, HERO_HEIGHT);
+        double width = detailImageBox.getWidth() > 0 ? detailImageBox.getWidth() : 470;
+        Ui.showCover(detailImage, image, width, HERO_HEIGHT);
     }
 
     private void updateSaveButton(Place place) {
         saveButton.setText(itineraryIds.contains(place.id()) ? "✓ Saved to my trip" : "Save to my trip");
+        if (!Session.isLoggedIn()) {
+            tripHint.setText("Sign in to save places to a trip and keep favorites.");
+        } else if (currentTripName != null) {
+            tripHint.setText("Saving adds this place to day 1 of \"" + currentTripName + "\". Plan the days on your itinerary.");
+        } else {
+            tripHint.setText("Saving starts a new trip for you. Plan the days on your itinerary.");
+        }
     }
 
     private void updateFavoriteButton(Place place) {
-        favoriteButton.setText(favoriteIds.contains(place.id()) ? "♥ Favorited" : "♡ Favorite");
+        favoriteButton.setText(favoriteIds.contains(place.id()) ? "♥  In your favorites" : "♡  Add to favorites");
+    }
+
+    // Shows changes (saved / favorited) on the selected row and in the tags
+    private void refreshSelected(Place place) {
+        updateSaveButton(place);
+        updateFavoriteButton(place);
+        updateTags(place);
+        placesList.refresh();
     }
 
     // Adds the place to the current trip (day 1), or takes it out if it's already there.
@@ -527,6 +548,7 @@ public class BrowsePlacesController {
 
         try {
             UserDAO.Itinerary trip = UserDAO.getOrCreateCurrentItinerary(Session.getUser().id());
+            currentTripName = trip.name();
             if (itineraryIds.contains(place.id())) {
                 UserDAO.removePlaceFromItinerary(trip.id(), place.id());
                 itineraryIds.remove(place.id());
@@ -538,7 +560,7 @@ public class BrowsePlacesController {
             e.printStackTrace();
             showMessage("Couldn't update your trip. Please try again.");
         }
-        updateSaveButton(place);
+        refreshSelected(place);
     }
 
     @FXML
@@ -563,7 +585,7 @@ public class BrowsePlacesController {
             e.printStackTrace();
             showMessage("Couldn't update your favorites. Please try again.");
         }
-        updateFavoriteButton(place);
+        refreshSelected(place);
     }
 
     // Opens Google Maps directions to the selected place in the computer's web browser
@@ -597,100 +619,30 @@ public class BrowsePlacesController {
 
 
     // ---------------------------------------------------------------
-    //  Images
+    //  Opening a specific place (used by the itinerary page's "View place")
     // ---------------------------------------------------------------
 
-    // Finds the photo for a place (or the fallback) and loads it at a reduced size.
-    // Each file is only loaded once and then reused.
-    private Image loadImage(Place place, int width) {
-        URL url = getClass().getResource(PLACE_IMAGE_FOLDER + place.id() + ".jpg");
-        if (url == null) {
-            url = getClass().getResource(FALLBACK_IMAGE);
+    /** Clears the search and filters, then selects and scrolls to this place. */
+    public void showPlace(int placeId) {
+        searchField.setText("");
+        activeCategories.clear();
+        activeCategories.addAll(chipKeys(categoryChips));
+        activePrices.clear();
+        activePrices.addAll(chipKeys(priceChips));
+        refreshChips(categoryChips, activeCategories);
+        refreshChips(priceChips, activePrices);
+        applyFilters();
+
+        for (Place p : placesList.getItems()) {
+            if (p.id() == placeId) {
+                placesList.getSelectionModel().select(p);
+                placesList.scrollTo(p);
+                return;
+            }
         }
-        if (url == null) {
-            return null;
-        }
-
-        String key = url + "@" + width;
-        Image image = imageCache.get(key);
-        if (image == null) {
-            image = new Image(url.toExternalForm(), width, 0, true, true);
-            imageCache.put(key, image);
-        }
-        return image;
-    }
-
-    // Fills a w x h box with the image, cropping the edges instead of stretching it
-    private static void showCover(ImageView view, Image image, double w, double h) {
-        view.setImage(image);
-        view.setPreserveRatio(false);
-        view.setFitWidth(w);
-        view.setFitHeight(h);
-        if (image == null || image.getWidth() <= 0 || image.getHeight() <= 0) {
-            view.setViewport(null);
-            return;
-        }
-        double scale = Math.max(w / image.getWidth(), h / image.getHeight());
-        double viewW = w / scale;
-        double viewH = h / scale;
-        view.setViewport(new Rectangle2D((image.getWidth() - viewW) / 2, (image.getHeight() - viewH) / 2, viewW, viewH));
-    }
-
-
-    // ---------------------------------------------------------------
-    //  Navigation
-    // ---------------------------------------------------------------
-
-    @FXML
-    protected void onLogOutClicked(ActionEvent event) {
-        Session.logout();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-page.fxml"));
-            Parent root = loader.load();
-
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            window.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
-            window.setFullScreenExitHint("");
-            window.setFullScreen(true);
-            window.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // "My dashboard" and "Account settings" are not built yet.
-    // To hook one up later, give its button its own onAction method in browse-places.fxml.
-    @FXML
-    protected void onComingSoonClicked() {
-        showMessage("This page isn't ready yet.");
     }
 
     private void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-        alert.setHeaderText(null);
-        alert.showAndWait();
-    }
-
-    // ---------------------------------------------------------------
-    //  Itinerary
-    // ---------------------------------------------------------------
-    @FXML
-    protected void onItineraryClicked(ActionEvent event) throws IOException{
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("itinerary.fxml"));
-            Parent root = loader.load();
-
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            window.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
-            window.setFullScreenExitHint("");
-            window.setFullScreen(true);
-            window.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Ui.info(placesList, message);
     }
 }
