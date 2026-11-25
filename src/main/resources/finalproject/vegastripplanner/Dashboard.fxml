@@ -142,7 +142,7 @@
                             <children>
                                 <Label minWidth="-Infinity" styleClass="dash-account-title" text="Make it more you." />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Label styleClass="aiv-muted" text="Update your travel preferences, notifications, and account details." />
+                                <Label styleClass="aiv-muted" text="Update your travel preferences and account details." />
                                 <Region HBox.hgrow="ALWAYS" />
                                 <Button fx:id="accountSettingsLink" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAccountSettingsClicked" styleClass="aiv-link" text="Account settings  →" />
                             </children>

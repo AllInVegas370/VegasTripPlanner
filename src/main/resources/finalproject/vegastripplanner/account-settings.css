@@ -30,7 +30,6 @@
 
 /* ---------- Cards ---------- */
 .settings-card { -fx-padding: 24; }
-.settings-pair { -fx-min-height: 250px; }
 .settings-privacy { -fx-min-height: 100px; }
 .settings-card-title { -fx-text-fill: -aiv-text; -fx-font-size: 20px; -fx-font-weight: bold; }
 .settings-description { -fx-text-fill: -aiv-muted; -fx-font-size: 12px; }

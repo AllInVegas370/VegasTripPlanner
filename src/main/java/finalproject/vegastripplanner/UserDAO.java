@@ -37,7 +37,6 @@ public class UserDAO {
     /** Everything the Account settings page shows. Dates can be null. */
     public record AccountSettings(String firstName, String lastName, String username,
                                   String email, String phone, String timeZone, String distanceUnits,
-                                  boolean tripReminders, boolean discoveries,
                                   LocalDate passwordChangedOn, LocalDate memberSince) {}
 
     // ==================================================================
@@ -111,7 +110,6 @@ public class UserDAO {
                 return new AccountSettings(rs.getString("first_name"), rs.getString("last_name"),
                         rs.getString("username"), rs.getString("email"), rs.getString("phone"),
                         rs.getString("time_zone"), rs.getString("distance_units"),
-                        rs.getInt("notify_trip_reminders") != 0, rs.getInt("notify_discoveries") != 0,
                         timestampToDate(rs.getString("password_changed_at")),
                         timestampToDate(rs.getString("created_at")));
             }
@@ -140,12 +138,6 @@ public class UserDAO {
         AccountSettings saved = getAccountSettings(userId);
         return new User(userId, saved.firstName(), saved.lastName(), saved.username(),
                 saved.email(), saved.phone());
-    }
-
-    public static void updateNotifications(int userId, boolean tripReminders, boolean discoveries)
-            throws SQLException {
-        runUpdate("UPDATE usersTable SET notify_trip_reminders = ?, notify_discoveries = ? WHERE user_ID = ?",
-                tripReminders ? 1 : 0, discoveries ? 1 : 0, userId);
     }
 
     /** Changes the password if the current one is right. Returns false if it was wrong. */

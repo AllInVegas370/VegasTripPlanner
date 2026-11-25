@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -44,13 +43,12 @@ public class AccountSettingsController {
     @FXML private NavBarController navBarController;   // the included nav-bar.fxml
     @FXML private ScrollPane pageScroll;
     @FXML private VBox pageContent;
-    @FXML private Button profileLink, securityLink, notificationsLink, privacyLink;
-    @FXML private Node profileCard, securityCard, notificationsCard, privacyCard;
+    @FXML private Button profileLink, securityLink, privacyLink;
+    @FXML private Node profileCard, securityCard, privacyCard;
 
     @FXML private Label signedInAsLabel, profileError, passwordChangedLabel;
     @FXML private TextField firstNameField, lastNameField, emailField, phoneField;
     @FXML private ComboBox<String> timeZoneBox, unitsBox;
-    @FXML private ToggleButton tripRemindersSwitch, discoveriesSwitch;
     @FXML private Button saveButton, changePasswordButton, twoStepButton, downloadButton, deleteAccountButton,
             preferencesLink;
 
@@ -60,8 +58,7 @@ public class AccountSettingsController {
     @FXML
     public void initialize() {
         navBarController.setActive(NavBarController.ACCOUNT);
-        sections = Map.of(profileLink, profileCard, securityLink, securityCard,
-                notificationsLink, notificationsCard, privacyLink, privacyCard);
+        sections = Map.of(profileLink, profileCard, securityLink, securityCard, privacyLink, privacyCard);
         highlight(profileLink);
 
         timeZoneBox.getItems().setAll(TIME_ZONES);
@@ -73,7 +70,7 @@ public class AccountSettingsController {
 
         if (!Session.isLoggedIn()) {
             for (Node n : List.of(saveButton, changePasswordButton, twoStepButton, downloadButton,
-                    deleteAccountButton, tripRemindersSwitch, discoveriesSwitch)) {
+                    deleteAccountButton)) {
                 n.setDisable(true);
             }
             signedInAsLabel.setText("Not signed in");
@@ -104,8 +101,6 @@ public class AccountSettingsController {
         phoneField.setText(settings.phone() == null ? "" : settings.phone());
         timeZoneBox.setValue(settings.timeZone() != null ? settings.timeZone() : TIME_ZONES.get(0));
         unitsBox.setValue(settings.distanceUnits() != null ? settings.distanceUnits() : UNITS.get(0));
-        tripRemindersSwitch.setSelected(settings.tripReminders());
-        discoveriesSwitch.setSelected(settings.discoveries());
         passwordChangedLabel.setText(passwordAge(settings));
     }
 
@@ -136,7 +131,7 @@ public class AccountSettingsController {
     }
 
     private void highlight(Button active) {
-        for (Button b : List.of(profileLink, securityLink, notificationsLink, privacyLink)) {
+        for (Button b : List.of(profileLink, securityLink, privacyLink)) {
             b.getStyleClass().remove(LINK_ACTIVE);
             if (!b.getStyleClass().contains(LINK)) b.getStyleClass().add(LINK);
         }
@@ -186,7 +181,6 @@ public class AccountSettingsController {
         try {
             UserDAO.User updated = UserDAO.updateProfile(userId(), first, last, email, phone,
                     timeZoneBox.getValue(), unitsBox.getValue());
-            UserDAO.updateNotifications(userId(), tripRemindersSwitch.isSelected(), discoveriesSwitch.isSelected());
             Session.updateUser(updated);   // other pages now show the new name
         } catch (SQLException e) {
             if (String.valueOf(e.getMessage()).contains("usersTable.email")) {
@@ -275,22 +269,6 @@ public class AccountSettingsController {
     @FXML
     protected void onTwoStepClicked() {
         Ui.info(twoStepButton, "Two-step verification is coming soon.");
-    }
-
-
-    // ---------------------------------------------------------------
-    //  Notifications (saved as soon as a switch is flipped)
-    // ---------------------------------------------------------------
-
-    @FXML
-    protected void onNotificationsChanged() {
-        try {
-            UserDAO.updateNotifications(userId(), tripRemindersSwitch.isSelected(), discoveriesSwitch.isSelected());
-            Ui.toast(tripRemindersSwitch, "Notification settings saved.", false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Ui.toast(tripRemindersSwitch, "Couldn't save that setting.", true);
-        }
     }
 
 

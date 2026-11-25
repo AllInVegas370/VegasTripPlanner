@@ -9,18 +9,23 @@ import java.sql.*;
 /**
  * The ONE place the app opens the database.
  * Every DAO / controller should call Database.connect() instead of DriverManager directly.
+ *
  * Call Database.initialize() once when the app starts (before showing the first window).
  * It makes sure the database file exists and has every table the app needs.
  */
 public final class Database {
 
-    /** Where the live database file lives */
+    /** Where the live database file lives. Relative = the folder the app is run from
+     *  (in IntelliJ that's the project root, next to pom.xml). */
     private static final Path DB_FILE = Path.of("AllInVegas.db");
 
+    /** Optional starter copy inside src/main/resources/finalproject/vegastripplanner/.
+     *  Used only if DB_FILE doesn't exist yet (e.g. a fresh clone). */
     private static final String STARTER_RESOURCE = "/finalproject/vegastripplanner/AllInVegas.db";
 
     private static final String DB_URL = "jdbc:sqlite:" + DB_FILE;
 
+    /** Bump this and add a new "if (version < N)" block below whenever the schema changes. */
     private static final int LATEST_VERSION = 3;
 
     private Database() {}
@@ -91,8 +96,6 @@ public final class Database {
                     // The Account settings page
                     addColumnIfMissing(c, "usersTable", "time_zone", "TEXT");
                     addColumnIfMissing(c, "usersTable", "distance_units", "TEXT");
-                    addColumnIfMissing(c, "usersTable", "notify_trip_reminders", "INTEGER NOT NULL DEFAULT 1");
-                    addColumnIfMissing(c, "usersTable", "notify_discoveries", "INTEGER NOT NULL DEFAULT 1");
                     addColumnIfMissing(c, "usersTable", "password_changed_at", "TEXT");
                 }
                 // Next change goes here, e.g.:

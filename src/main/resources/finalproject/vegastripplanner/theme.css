@@ -26,6 +26,7 @@
     -aiv-action: linear-gradient(to right, #ff987a, #f66ba5);
     -aiv-action-hover: linear-gradient(to right, #ffa98f, #f87fb3);
 
+    /* "Inter" is used in Figma. If it isn't installed JavaFX falls back to the system font. */
     -fx-font-family: "Segoe UI";
     -fx-font-size: 13px;
     -fx-text-fill: -aiv-text;
@@ -298,39 +299,6 @@
 }
 .aiv-page .check-box:selected .box { -fx-background-color: -aiv-lavender; -fx-border-color: -aiv-lavender; }
 .aiv-page .check-box:selected .mark { -fx-background-color: -aiv-ink; }
-
-/* ---------- On/off switch (a ToggleButton with a round "thumb" graphic) ---------- */
-.aiv-switch {
-    -fx-background-color: -aiv-input;
-    -fx-background-insets: 0;
-    -fx-background-radius: 12;
-    -fx-border-color: -aiv-border-strong;
-    -fx-border-radius: 12;
-    -fx-min-width: 40px;
-    -fx-pref-width: 40px;
-    -fx-max-width: 40px;
-    -fx-min-height: 24px;
-    -fx-pref-height: 24px;
-    -fx-max-height: 24px;
-    -fx-padding: 0 2 0 2;
-    -fx-alignment: center-left;
-    -fx-content-display: graphic-only;
-    -fx-cursor: hand;
-}
-.aiv-switch .aiv-switch-thumb {
-    -fx-background-color: -aiv-muted;
-    -fx-background-radius: 9;
-    -fx-min-width: 18px;
-    -fx-min-height: 18px;
-    -fx-max-width: 18px;
-    -fx-max-height: 18px;
-}
-.aiv-switch:selected {
-    -fx-background-color: -aiv-lavender;
-    -fx-border-color: -aiv-lavender;
-    -fx-alignment: center-right;
-}
-.aiv-switch:selected .aiv-switch-thumb { -fx-background-color: -aiv-ink; }
 
 /* ---------- Scroll panes + list views (transparent, slim scroll bars) ---------- */
 .aiv-page .scroll-pane,

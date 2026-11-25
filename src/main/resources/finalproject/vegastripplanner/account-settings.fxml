@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -68,7 +67,6 @@
                                         <Label styleClass="aiv-eyebrow" text="YOUR ACCOUNT" />
                                         <Button fx:id="profileLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Profile details" />
                                         <Button fx:id="securityLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Sign-in &amp; security" />
-                                        <Button fx:id="notificationsLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Notifications" />
                                         <Button fx:id="privacyLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Privacy &amp; data" />
                                         <VBox spacing="10.0" styleClass="aiv-card, settings-tip">
                                             <VBox.margin>
@@ -150,74 +148,34 @@
                                             </children>
                                         </VBox>
 
-                                        <!-- security + notifications side by side -->
-                                        <HBox spacing="24.0">
+                                        <!-- sign-in & security -->
+                                        <VBox fx:id="securityCard" spacing="22.0" styleClass="aiv-card, settings-card">
                                             <children>
-                                                <VBox fx:id="securityCard" maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="22.0" styleClass="aiv-card, settings-card, settings-pair" HBox.hgrow="ALWAYS">
+                                                <Label styleClass="settings-card-title" text="Sign-in &amp; security" />
+                                                <HBox alignment="CENTER_LEFT" spacing="20.0">
                                                     <children>
-                                                        <Label styleClass="settings-card-title" text="Sign-in &amp; security" />
-                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
                                                             <children>
-                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-                                                                    <children>
-                                                                        <Label styleClass="settings-setting" text="Password" />
-                                                                        <Label fx:id="passwordChangedLabel" styleClass="settings-description" text="" />
-                                                                    </children>
-                                                                </VBox>
-                                                                <Button fx:id="changePasswordButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onChangePasswordClicked" styleClass="aiv-button" text="Change password" />
+                                                                <Label styleClass="settings-setting" text="Password" />
+                                                                <Label fx:id="passwordChangedLabel" styleClass="settings-description" text="" />
                                                             </children>
-                                                        </HBox>
-                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
-                                                            <children>
-                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-                                                                    <children>
-                                                                        <Label styleClass="settings-setting" text="Two-step verification" />
-                                                                        <Label styleClass="settings-description" text="Add another layer of protection." />
-                                                                    </children>
-                                                                </VBox>
-                                                                <Button fx:id="twoStepButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onTwoStepClicked" styleClass="aiv-button" text="Coming Soon!" />
-                                                            </children>
-                                                        </HBox>
+                                                        </VBox>
+                                                        <Button fx:id="changePasswordButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onChangePasswordClicked" styleClass="aiv-button" text="Change password" />
                                                     </children>
-                                                </VBox>
-
-                                                <VBox fx:id="notificationsCard" maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="22.0" styleClass="aiv-card, settings-card, settings-pair" HBox.hgrow="ALWAYS">
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="20.0">
                                                     <children>
-                                                        <Label styleClass="settings-card-title" text="Notifications" />
-                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
                                                             <children>
-                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-                                                                    <children>
-                                                                        <Label styleClass="settings-setting" text="Trip reminders" />
-                                                                        <Label styleClass="settings-description" text="A heads-up before your plans begin." />
-                                                                    </children>
-                                                                </VBox>
-                                                                <ToggleButton fx:id="tripRemindersSwitch" mnemonicParsing="false" onAction="#onNotificationsChanged" styleClass="aiv-switch">
-                                                                    <graphic>
-                                                                        <StackPane styleClass="aiv-switch-thumb" />
-                                                                    </graphic>
-                                                                </ToggleButton>
+                                                                <Label styleClass="settings-setting" text="Two-step verification" />
+                                                                <Label styleClass="settings-description" text="Add another layer of protection." />
                                                             </children>
-                                                        </HBox>
-                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
-                                                            <children>
-                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-                                                                    <children>
-                                                                        <Label styleClass="settings-setting" text="Vegas discoveries" />
-                                                                        <Label styleClass="settings-description" text="Fresh places and ideas for your next trip." />
-                                                                    </children>
-                                                                </VBox>
-                                                                <ToggleButton fx:id="discoveriesSwitch" mnemonicParsing="false" onAction="#onNotificationsChanged" styleClass="aiv-switch">
-                                                                    <graphic>
-                                                                        <StackPane styleClass="aiv-switch-thumb" />
-                                                                    </graphic>
-                                                                </ToggleButton>
-                                                            </children>
-                                                        </HBox>
+                                                        </VBox>
+                                                        <Button fx:id="twoStepButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onTwoStepClicked" styleClass="aiv-button" text="Set up" />
                                                     </children>
-                                                </VBox>
+                                                </HBox>
                                             </children>
-                                        </HBox>
+                                        </VBox>
 
                                         <!-- privacy -->
                                         <HBox fx:id="privacyCard" alignment="CENTER_LEFT" spacing="24.0" styleClass="aiv-card, settings-card, settings-privacy">
