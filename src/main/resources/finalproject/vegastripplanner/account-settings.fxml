@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Account settings -->
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1440.0" styleClass="aiv-page" xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject.vegastripplanner.AccountSettingsController">
+    <stylesheets>
+        <URL value="@theme.css" />
+        <URL value="@account-settings.css" />
+    </stylesheets>
+
+    <!-- HEADER: shared navigation bar -->
+    <top>
+        <VBox>
+            <padding>
+                <Insets left="48.0" right="48.0" top="30.0" />
+            </padding>
+            <children>
+                <fx:include fx:id="navBar" source="nav-bar.fxml" />
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="pageScroll" fitToWidth="true" hbarPolicy="NEVER">
+            <content>
+                <VBox fx:id="pageContent">
+                    <padding>
+                        <Insets bottom="24.0" left="48.0" right="48.0" />
+                    </padding>
+                    <children>
+
+                        <!-- heading -->
+                        <HBox alignment="CENTER_LEFT" styleClass="aiv-page-heading">
+                            <children>
+                                <VBox spacing="6.0">
+                                    <children>
+                                        <Label styleClass="aiv-eyebrow" text="YOUR VEGAS. YOUR WAY." />
+                                        <Label styleClass="aiv-title" text="Account settings" />
+                                        <Label styleClass="aiv-subtitle" text="Keep your details, preferences, and privacy in your hands." />
+                                    </children>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button fx:id="saveButton" minWidth="184.0" mnemonicParsing="false" onAction="#onSaveClicked" styleClass="aiv-button-primary" text="Save changes" />
+                            </children>
+                        </HBox>
+
+                        <HBox alignment="TOP_LEFT" spacing="24.0">
+                            <children>
+
+                                <!-- sidebar -->
+                                <VBox minWidth="232.0" prefWidth="232.0" spacing="12.0">
+                                    <children>
+                                        <Label styleClass="aiv-eyebrow" text="YOUR ACCOUNT" />
+                                        <Button fx:id="profileLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Profile details" />
+                                        <Button fx:id="securityLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Sign-in &amp; security" />
+                                        <Button fx:id="notificationsLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Notifications" />
+                                        <Button fx:id="privacyLink" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSidebarClicked" styleClass="settings-link" text="Privacy &amp; data" />
+                                        <VBox spacing="10.0" styleClass="aiv-card, settings-tip">
+                                            <VBox.margin>
+                                                <Insets top="8.0" />
+                                            </VBox.margin>
+                                            <children>
+                                                <Label styleClass="settings-tip-title" text="Made for your Vegas." />
+                                                <Label styleClass="settings-tip-text" text="Your preferences help us find places you'll love, not just places everyone goes." wrapText="true" />
+                                                <Button fx:id="preferencesLink" mnemonicParsing="false" onAction="#onEditPreferencesClicked" styleClass="aiv-link" text="Edit trip preferences  →" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- main column -->
+                                <VBox spacing="24.0" HBox.hgrow="ALWAYS">
+                                    <children>
+
+                                        <!-- profile -->
+                                        <VBox fx:id="profileCard" spacing="20.0" styleClass="aiv-card, settings-card">
+                                            <children>
+                                                <HBox alignment="TOP_LEFT" spacing="16.0">
+                                                    <children>
+                                                        <VBox spacing="4.0">
+                                                            <children>
+                                                                <Label styleClass="settings-card-title" text="Profile details" />
+                                                                <Label styleClass="settings-description" text="The essentials for your next great trip." />
+                                                            </children>
+                                                        </VBox>
+                                                        <Region HBox.hgrow="ALWAYS" />
+                                                        <Label fx:id="signedInAsLabel" styleClass="settings-badge" text="" />
+                                                    </children>
+                                                </HBox>
+                                                <GridPane hgap="20.0" vgap="16.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints percentWidth="50.0" />
+                                                        <ColumnConstraints percentWidth="50.0" />
+                                                    </columnConstraints>
+                                                    <children>
+                                                        <VBox spacing="8.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                                            <children>
+                                                                <Label styleClass="aiv-field-label" text="First name" />
+                                                                <TextField fx:id="firstNameField" promptText="First name" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                            <children>
+                                                                <Label styleClass="aiv-field-label" text="Last name" />
+                                                                <TextField fx:id="lastNameField" promptText="Last name" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="8.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                            <children>
+                                                                <Label styleClass="aiv-field-label" text="Email address" />
+                                                                <TextField fx:id="emailField" promptText="you@example.com" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                            <children>
+                                                                <Label styleClass="aiv-field-label" text="Phone number" />
+                                                                <TextField fx:id="phoneField" promptText="+1 (702) 555-0142" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="8.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                                            <children>
+                                                                <Label styleClass="aiv-field-label" text="Time zone" />
+                                                                <ComboBox fx:id="timeZoneBox" maxWidth="1.7976931348623157E308" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                            <children>
+                                                                <Label styleClass="aiv-field-label" text="Distance units" />
+                                                                <ComboBox fx:id="unitsBox" maxWidth="1.7976931348623157E308" />
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </GridPane>
+                                                <Label fx:id="profileError" managed="false" styleClass="aiv-error-text" visible="false" wrapText="true" />
+                                            </children>
+                                        </VBox>
+
+                                        <!-- security + notifications side by side -->
+                                        <HBox spacing="24.0">
+                                            <children>
+                                                <VBox fx:id="securityCard" maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="22.0" styleClass="aiv-card, settings-card, settings-pair" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <Label styleClass="settings-card-title" text="Sign-in &amp; security" />
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label styleClass="settings-setting" text="Password" />
+                                                                        <Label fx:id="passwordChangedLabel" styleClass="settings-description" text="" />
+                                                                    </children>
+                                                                </VBox>
+                                                                <Button fx:id="changePasswordButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onChangePasswordClicked" styleClass="aiv-button" text="Change password" />
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label styleClass="settings-setting" text="Two-step verification" />
+                                                                        <Label styleClass="settings-description" text="Add another layer of protection." />
+                                                                    </children>
+                                                                </VBox>
+                                                                <Button fx:id="twoStepButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onTwoStepClicked" styleClass="aiv-button" text="Coming Soon!" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+
+                                                <VBox fx:id="notificationsCard" maxWidth="1.7976931348623157E308" prefWidth="0.0" spacing="22.0" styleClass="aiv-card, settings-card, settings-pair" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <Label styleClass="settings-card-title" text="Notifications" />
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label styleClass="settings-setting" text="Trip reminders" />
+                                                                        <Label styleClass="settings-description" text="A heads-up before your plans begin." />
+                                                                    </children>
+                                                                </VBox>
+                                                                <ToggleButton fx:id="tripRemindersSwitch" mnemonicParsing="false" onAction="#onNotificationsChanged" styleClass="aiv-switch">
+                                                                    <graphic>
+                                                                        <StackPane styleClass="aiv-switch-thumb" />
+                                                                    </graphic>
+                                                                </ToggleButton>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label styleClass="settings-setting" text="Vegas discoveries" />
+                                                                        <Label styleClass="settings-description" text="Fresh places and ideas for your next trip." />
+                                                                    </children>
+                                                                </VBox>
+                                                                <ToggleButton fx:id="discoveriesSwitch" mnemonicParsing="false" onAction="#onNotificationsChanged" styleClass="aiv-switch">
+                                                                    <graphic>
+                                                                        <StackPane styleClass="aiv-switch-thumb" />
+                                                                    </graphic>
+                                                                </ToggleButton>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+
+                                        <!-- privacy -->
+                                        <HBox fx:id="privacyCard" alignment="CENTER_LEFT" spacing="24.0" styleClass="aiv-card, settings-card, settings-privacy">
+                                            <children>
+                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <Label styleClass="settings-setting-strong" text="Your account. Your control." />
+                                                        <Label styleClass="settings-description" text="Download your information or manage account deletion." />
+                                                    </children>
+                                                </VBox>
+                                                <HBox alignment="CENTER_RIGHT" minWidth="-Infinity" spacing="28.0">
+                                                    <children>
+                                                        <Button fx:id="downloadButton" mnemonicParsing="false" onAction="#onDownloadClicked" styleClass="aiv-button" text="Download data" />
+                                                        <Button fx:id="deleteAccountButton" mnemonicParsing="false" onAction="#onDeleteAccountClicked" styleClass="aiv-link-peach" text="Delete account" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- FOOTER -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT">
+            <padding>
+                <Insets bottom="20.0" left="48.0" right="48.0" top="12.0" />
+            </padding>
+            <children>
+                <Label styleClass="aiv-footer-text" text="A little planning. A lot of Vegas." />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label styleClass="aiv-footer-text" text="© 2026 All In Vegas" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

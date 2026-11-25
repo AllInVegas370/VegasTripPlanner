@@ -1,0 +1,39 @@
+/* =====================================================================
+   Account settings (account-settings.fxml)
+   Loaded after theme.css, so the -aiv-... colours come from there.
+   ===================================================================== */
+
+/* ---------- Sidebar ---------- */
+.settings-link {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-color: transparent;
+    -fx-border-radius: 7;
+    -fx-text-fill: -aiv-muted;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-min-height: 48px;
+    -fx-padding: 12 16 12 16;
+    -fx-cursor: hand;
+}
+.settings-link:hover { -fx-text-fill: -aiv-lavender; }
+.settings-link-active {
+    -fx-background-color: -aiv-surface-selected;
+    -fx-border-color: -aiv-border-strong;
+    -fx-text-fill: -aiv-lavender;
+}
+
+.settings-tip { -fx-padding: 24 16 24 16; }
+.settings-tip-title { -fx-text-fill: -aiv-text; -fx-font-size: 16px; -fx-font-weight: bold; }
+.settings-tip-text { -fx-text-fill: -aiv-muted; -fx-font-size: 13px; -fx-line-spacing: 4px; }
+
+/* ---------- Cards ---------- */
+.settings-card { -fx-padding: 24; }
+.settings-pair { -fx-min-height: 250px; }
+.settings-privacy { -fx-min-height: 100px; }
+.settings-card-title { -fx-text-fill: -aiv-text; -fx-font-size: 20px; -fx-font-weight: bold; }
+.settings-description { -fx-text-fill: -aiv-muted; -fx-font-size: 12px; }
+.settings-badge { -fx-text-fill: -aiv-lavender; -fx-font-size: 12px; }
+.settings-setting { -fx-text-fill: -aiv-text; -fx-font-size: 14px; }
+.settings-setting-strong { -fx-text-fill: -aiv-text; -fx-font-size: 15px; -fx-font-weight: bold; }

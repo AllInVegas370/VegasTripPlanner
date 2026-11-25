@@ -105,8 +105,8 @@
                                         <ToggleButton mnemonicParsing="false" styleClass="browse-chip, browse-chip-all" text="Select all" userData="ALL" />
                                         <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="Free" userData="Free" />
                                         <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$" userData="\$" />
-                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$\$" userData="\$\$" />
-                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$\$\$" userData="\$\$\$" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$$" userData="\$$" />
+                                        <ToggleButton mnemonicParsing="false" styleClass="browse-chip" text="\$$$" userData="\$$$" />
                                     </children>
                                 </FlowPane>
                                 <Label fx:id="filterSummary" minWidth="-Infinity" styleClass="browse-filter-hint" text="All categories · All prices" />
